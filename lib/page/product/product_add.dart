@@ -326,33 +326,36 @@ class _ProductAddState extends State<ProductAdd> {
   }
 
   Widget mainImage(int i) {
-    return InkWell(
-        child: Column(
-          children: [
-            removeButton(),
-            
-            DottedBorder(
-                strokeWidth: 1,
-                dashPattern: [8, 1],
-                borderType: BorderType.RRect,
-                radius: Radius.circular(6),
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  child: Center(child: imageShow(i)),
-                )),
-          ],
-        ),
-        onTap: () {
-          imagePick(imagechange, i);
-        });
+    return Column(
+      children: [
+        removeButton(i),
+        InkWell(
+            child: Container(
+              child: DottedBorder(
+                  strokeWidth: 1,
+                  dashPattern: [8, 1],
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(6),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    child: Center(child: imageShow(i)),
+                  )),
+            ),
+            onTap: () {
+              imagePick(imagechange, i);
+            }),
+      ],
+    );
   }
 
-  removeButton() {
+  removeButton(i) {
     return IconButton(
-      icon: Icon(Icons.delete),
-      onPressed: () {},
-    );
+        icon: Icon(
+          Icons.delete,
+          color: Colors.red,
+        ),
+        onPressed: () => imageRemove(i));
   }
 
   Widget field(
@@ -685,6 +688,23 @@ class _ProductAddState extends State<ProductAdd> {
         return image4 = v;
       else
         return image5 = v;
+    });
+  }
+
+  imageRemove(i) {
+    setState(() {
+      if (i == 0)
+        return image0 = null;
+      else if (i == 1)
+        return image1 = null;
+      else if (i == 2)
+        return image2 = null;
+      else if (i == 3)
+        return image3 = null;
+      else if (i == 4)
+        return image4 = null;
+      else
+        return image5 = null;
     });
   }
 
