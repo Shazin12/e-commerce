@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:web_test/home.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:web_test/service/PHP_DB_Group.dart';
+import 'package:web_test/service/PHP_DB_Product.dart';
 
 import 'service/PHP_DB_Brand.dart';
 import 'service/PHP_DB_SubCategory.dart';
@@ -15,6 +16,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => PHP_DB_SubCategory()),
       ChangeNotifierProvider(create: (_) => PHP_DB_Brand()),
       ChangeNotifierProvider(create: (_) => PHP_DB_Group()),
+      ChangeNotifierProvider(create: (_) => PHP_DB_Product()),
     ],
     child: MyApp(),
   ));

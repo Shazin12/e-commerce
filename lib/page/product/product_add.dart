@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:provider/provider.dart';
 import 'package:web_test/service/PHP_DB_Group.dart';
+import 'package:web_test/service/PHP_DB_Product.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
 import 'package:web_test/widget/dropDown.dart';
@@ -84,8 +87,13 @@ class _ProductAddState extends State<ProductAdd> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
+    return Scaffold(
+    //  backgroundColor: bkColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Stack(
         children: [
           SingleChildScrollView(
             child: Form(
@@ -291,7 +299,7 @@ class _ProductAddState extends State<ProductAdd> {
                         child: field(
                             controller: _deleviryCostController,
                             maxLine: 1,
-                            hintText: 'Deleviry Cost',
+                            hintText: 'Delivery Cost',
                             width: 200,
                             validation: (v) => deleviryCostValidation(v),
                             type: TextInputType.number),
@@ -306,7 +314,7 @@ class _ProductAddState extends State<ProductAdd> {
                   SizedBox(height: 30),
                   button(() {
                     if (formGlobalKey.currentState!.validate()) {
-                      debugPrint('yes');
+                      appProduct();
                     } else {
                       debugPrint('no');
                     }
@@ -674,7 +682,7 @@ class _ProductAddState extends State<ProductAdd> {
   }
 
   imagechange(v, i) {
-    print(v);
+  // print(v);
     setState(() {
       if (i == 0)
         return image0 = v;
@@ -721,5 +729,30 @@ class _ProductAddState extends State<ProductAdd> {
       return image4 == null ? Text('Image 4') : Image.memory(image4);
     else
       return image5 == null ? Text('Image 5') : Image.memory(image5);
+  }
+
+  void appProduct() {
+    context.read<PHP_DB_Product>().addData(
+        name: _productController.text,
+        des: _desController.text,
+        mainImage: base64Encode(image0),
+        image1: base64Encode(image1),
+        image2: base64Encode(image2),
+        image3: base64Encode(image3),
+        image4:image4 == null ? 'null' : base64Encode(image4),
+        image5:image5 == null ? 'null' : base64Encode(image5),
+        isActive: isSwitched,
+        returnAvailable: isReturn,
+        categoryId: selectCategory.id.toString(),
+        subCategoryId: selectSubCategory.id.toString(),
+        brandId: brand.id.toString(),
+        groupId: group.id.toString(),
+        mrp: _mrpController.text,
+        stock: _stockController.text,
+        sellingRate: _sellingController.text,
+        productCode: _proCodeController.text,
+        deliveryCost: _deleviryCostController.text,
+        similarProductId: [],
+        context: context);
   }
 }
