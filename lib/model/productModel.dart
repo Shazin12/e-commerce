@@ -32,6 +32,7 @@ class ProductModel {
     required this.productCode,
     required this.deliveryCost,
     required this.createdAt,
+    required this.shotName,
   });
 
   String id;
@@ -55,6 +56,7 @@ class ProductModel {
   String productCode;
   String deliveryCost;
   DateTime createdAt;
+  String shotName;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["id"],
@@ -77,6 +79,7 @@ class ProductModel {
         selling: json["selling"],
         productCode: json["product_code"],
         deliveryCost: json["delivery_cost"],
+        shotName: json["group_shot_name"],
         createdAt: DateTime.parse(json["created_at"]),
       );
 
@@ -101,6 +104,8 @@ class ProductModel {
         "selling": selling,
         "product_code": productCode,
         "delivery_cost": deliveryCost,
+        "group_shot_name": shotName,
         "created_at": createdAt.toIso8601String(),
+        
       };
 }

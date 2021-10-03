@@ -2,6 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/productModel.dart';
+import 'package:web_test/page/product/prodict_edit.dart';
 import 'package:web_test/page/product/product_add.dart';
 import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
@@ -53,7 +54,7 @@ class _ProductState extends State<Product> {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15.0))),
         onPressed: () {
-        //  context.read<PHP_DB_Product>().getData();
+          //  context.read<PHP_DB_Product>().getData();
           Navigator.push(
               context, MaterialPageRoute(builder: (c) => ProductAdd()));
         },
@@ -88,13 +89,10 @@ class _ProductState extends State<Product> {
   }
 
   void update(ProductModel i) {
-    // Navigator.of(context).push(MaterialPageRoute(
-    //     builder: (_) => EditCatogary(
-    //           categoryname: i.categoryName.toString(),
-    //           id: i.id.toString(),
-    //           imagepath: i.image.toString(),
-    //           isactive: i.isActive.toString(),
-    //         )));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ProductEdit(
+              id: i.id.toString(),
+            )));
   }
 
   void delete(ProductModel i) {

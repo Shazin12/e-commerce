@@ -49,4 +49,15 @@ class ProviderImage with ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  clear() {
+    image0 = null;
+    image1 = null;
+    image2 = null;
+    image3 = null;
+    image4 = null;
+    image5 = null;
+    isLoading = false;
+    notifyListeners();
+  }
 }

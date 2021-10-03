@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/groupModel.dart';
+import 'package:web_test/model/productModel.dart';
 import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
@@ -21,14 +22,15 @@ import 'package:web_test/url.dart';
 import 'package:web_test/widget/dropDown.dart';
 import 'package:web_test/widget/loader.dart';
 
-class ProductAdd extends StatefulWidget {
-  const ProductAdd({Key? key}) : super(key: key);
+class ProductEdit extends StatefulWidget {
+  String id;
+  ProductEdit({Key? key, required this.id}) : super(key: key);
 
   @override
-  _ProductAddState createState() => _ProductAddState();
+  _ProductEditState createState() => _ProductEditState();
 }
 
-class _ProductAddState extends State<ProductAdd> {
+class _ProductEditState extends State<ProductEdit> {
   TextStyle font = GoogleFonts.getFont('Bebas Neue', fontSize: 18);
 
   TextEditingController _productController = TextEditingController();
@@ -51,9 +53,37 @@ class _ProductAddState extends State<ProductAdd> {
   @override
   void initState() {
     super.initState();
+    List<ProductModel> pro = context
+        .read<PHP_DB_Product>()
+        .data
+        .where((element) => element.id == widget.id)
+        .toList();
+    ProviderImage image = context.read<ProviderImage>();
+    CateProvider cate = context.read<CateProvider>();
+
+    PHP_DB_Category category = context.read<PHP_DB_Category>();
+    PHP_DB_SubCategory subCategory = context.read<PHP_DB_SubCategory>();
+    PHP_DB_Brand brand = context.read<PHP_DB_Brand>();
+    PHP_DB_Group group = context.read<PHP_DB_Group>();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      context.read<ProviderImage>().clear();
-      context.read<CateProvider>().clear();
+      setState(() {
+        _productController.text = pro[0].productName;
+        _desController.text = pro[0].productDes;
+        _stockController.text = pro[0].stock;
+        _mrpController.text = pro[0].mrp;
+        _sellingController.text = pro[0].selling;
+        _proCodeController.text = pro[0].productCode;
+        _deleviryCostController.text = pro[0].deliveryCost;
+        image.changeImage0(pro[0].mainImage);
+        image.changeImage1(pro[0].image1);
+        image.changeImage2(pro[0].image2);
+        image.changeImage3(pro[0].image3);
+        image.changeImage4(pro[0].image4);
+        image.changeImage5(pro[0].image5);
+        isSwitched = pro[0].isActive == "0" ? true : false;
+        isReturn = pro[0].returnAvailable == "0" ? true : false;
+       // cate.changeCategory(v);
+      });
     });
   }
 
@@ -281,17 +311,6 @@ class _ProductAddState extends State<ProductAdd> {
                             width: 200,
                             validation: (v) => deleviryCostValidation(v),
                             type: TextInputType.number),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 20),
-                        child: CusField(
-                            controller: _groupProductShotName,
-                            maxLine: 1,
-                            hintText: 'Pro Group Shot Name',
-                            width: 200,
-                            validation: (v) => productValidation(v),
-                            type: TextInputType.text),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -551,8 +570,8 @@ class _ProductAddState extends State<ProductAdd> {
   }
 
   void appProduct() {
-    ProviderImage image = context.read<ProviderImage>();
-    CateProvider c = context.read<CateProvider>();
+    ProviderImage image = context.watch<ProviderImage>();
+    CateProvider c = context.watch<CateProvider>();
     context.read<PHP_DB_Product>().addData(
         name: _productController.text,
         des: _desController.text,

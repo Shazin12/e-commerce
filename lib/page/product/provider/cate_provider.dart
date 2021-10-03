@@ -52,4 +52,32 @@ class CateProvider with ChangeNotifier {
     group = v;
     notifyListeners();
   }
+
+  clear() {
+    selectCategory = CategoryModel(
+        categoryName: 'Select Category',
+        id: 'id',
+        isActive: 'isActive',
+        image: 'image',
+        createdAt: 'createdAt');
+    selectSubCategory = SubCategoryModel(
+        subCategoryName: 'Select Sub Category',
+        id: 'id',
+        image: 'image',
+        isActive: ' isActive',
+        categoryId: 'categoryId',
+        createdAt: 'createdAt');
+    brand = BrandModel(
+        brandName: 'Select Brand',
+        id: 'id',
+        brandDes: 'brandDes',
+        createdAt: 'createdAt');
+
+    group = GroupModel(
+      groupName: 'Select Group',
+      id: 'id',
+      createdAt: 'createdAt',
+    );
+    notifyListeners();
+  }
 }

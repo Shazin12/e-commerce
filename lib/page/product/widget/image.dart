@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:provider/provider.dart';
+import 'package:web_test/url.dart';
 
 import '../provider/provider_image.dart';
 
@@ -46,27 +48,33 @@ class CusImage extends StatelessWidget {
     if (i == 0)
       return value.image0 == null
           ? Text('Main Image')
-          : Image.memory(value.image0);
+          : imageNetOrMemory(value.image0);
     else if (i == 1)
       return value.image1 == null
           ? Text('Image 1')
-          : Image.memory(value.image1);
+          : imageNetOrMemory(value.image1);
     else if (i == 2)
       return value.image2 == null
           ? Text('Image 2')
-          : Image.memory(value.image2);
+          : imageNetOrMemory(value.image2);
     else if (i == 3)
-      return value.image3 == null
+      return value.image3 == null || value.image3 == "imageNull"
           ? Text('Image 3')
-          : Image.memory(value.image3);
+          : imageNetOrMemory(value.image3);
     else if (i == 4)
-      return value.image4 == null
+      return value.image4 == null || value.image4 == "imageNull"
           ? Text('Image 4')
-          : Image.memory(value.image4);
+          : imageNetOrMemory(value.image4);
     else
-      return value.image5 == null
+      return value.image5 == null || value.image5 == "imageNull"
           ? Text('Image 5')
-          : Image.memory(value.image5);
+          : imageNetOrMemory(value.image5);
+  }
+
+  Widget imageNetOrMemory(v) {
+    return v.toString().startsWith("/upload")
+        ? Image.network(imageUrls + v)
+        : Image.memory(v);
   }
 
   removeButton(ProviderImage v) {
@@ -83,7 +91,9 @@ class CusImage extends StatelessWidget {
   imagePick(ProviderImage values, i, context) async {
     values.changeLoadTrue();
     await ImagePickerWeb.getImage(outputType: ImageType.bytes).then((value) {
-      imagechanger(values, i, value);
+      value == null
+          ? debugPrint('NOT SELECTED')
+          : imagechanger(values, i, value);
       values.changeLoadFalse();
     }).catchError((e) {
       debugPrint(e);

@@ -46,6 +46,7 @@ class PHP_DB_Product with ChangeNotifier {
       required String sellingRate,
       required String productCode,
       required String deliveryCost,
+      required String shotName,
       required List similarProductId,
       required BuildContext context}) async {
     //PASSING DATA
@@ -69,8 +70,10 @@ class PHP_DB_Product with ChangeNotifier {
       "sellingRate": sellingRate,
       "productCode": productCode,
       "deliveryCost": deliveryCost,
-      "similarProductId": similarProductId
+      "similarProductId": similarProductId,
+      "shotName": shotName,
     };
+    print(shotName);
     var _url = Uri.parse('${urls}product/create.php?api=$api');
     dataAdd = true;
     notifyListeners();
@@ -183,6 +186,7 @@ class PHP_DB_Product with ChangeNotifier {
       required String productCode,
       required String deliveryCost,
       required List similarProductId,
+      required String shotName,
       // old path passing
       required String oldMainImage,
       required String oldImage1,
@@ -212,7 +216,8 @@ class PHP_DB_Product with ChangeNotifier {
       "sellingRate": sellingRate,
       "productCode": productCode,
       "deliveryCost": deliveryCost,
-      "similarProductId": similarProductId
+      "similarProductId": similarProductId,
+      "shotName": shotName,
     };
     var _url = Uri.parse('${urls}product/update.php?api=$api');
     dataAdd = true;
