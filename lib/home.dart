@@ -6,6 +6,7 @@ import 'package:web_test/page/sub_category/sub_category.dart';
 import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:web_test/service/PHP_DB_Group.dart';
+import 'package:web_test/service/PHP_DB_Product.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
 import 'page/brand/brand.dart';
@@ -56,6 +57,10 @@ class _D_HomeState extends State<D_Home> {
       context.read<PHP_DB_Group>().data.isNotEmpty
           ? debugPrint('Data not empty in brand')
           : context.read<PHP_DB_Group>().getData();
+      // group data
+      context.read<PHP_DB_Product>().data.isNotEmpty
+          ? debugPrint('Data not empty in brand')
+          : context.read<PHP_DB_Product>().getData();
     });
     super.initState();
   }
@@ -63,63 +68,62 @@ class _D_HomeState extends State<D_Home> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context);
-    return  Container(
-            child: Stack(
+    return Container(
+        child: Stack(
+      children: [
+        Container(
+          width: media.size.width,
+          height: media.size.height,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[900]
+              : Color.fromRGBO(189, 212, 231, 1),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                sideBar('DashBoard', Icons.dashboard_outlined, 0),
+                sideBar('Category', Icons.dashboard_outlined, 1),
+                sideBar('Sub Category', Icons.dashboard_outlined, 2),
+                sideBar('Product', Icons.dashboard_outlined, 3),
+                sideBar('Group', Icons.dashboard_outlined, 4),
+                sideBar('Brand', Icons.dashboard_outlined, 5),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
             children: [
-              Container(
-                width: media.size.width,
-                height: media.size.height,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[900]
-                    : Color.fromRGBO(189, 212, 231, 1),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      sideBar('DashBoard', Icons.dashboard_outlined, 0),
-                      sideBar('Category', Icons.dashboard_outlined, 1),
-                      sideBar('Sub Category', Icons.dashboard_outlined, 2),
-                      sideBar('Product', Icons.dashboard_outlined, 3),
-                      sideBar('Group', Icons.dashboard_outlined, 4),
-                      sideBar('Brand', Icons.dashboard_outlined, 5),
-                    ],
+              AnimatedContainer(
+                duration: Duration(seconds: 1),
+                width: media.size.width > 700 ? 160 : 40,
+              ),
+              Expanded(
+                child: Container(
+                  width: media.size.width,
+                  height: media.size.height,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      width: media.size.width,
+                      height: media.size.height,
+                      //  color: Colors.black,
+                      child: where[_selectedIndex],
+                    ),
                   ),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey[850]
+                          : bkColor,
+                      borderRadius: BorderRadius.circular(25)),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    AnimatedContainer(
-                      duration: Duration(seconds: 1),
-                      width: media.size.width > 700 ? 160 : 40,
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: media.size.width,
-                        height: media.size.height,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            width: media.size.width,
-                            height: media.size.height,
-                            //  color: Colors.black,
-                            child: where[_selectedIndex],
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.grey[850]
-                                    : bkColor,
-                            borderRadius: BorderRadius.circular(25)),
-                      ),
-                    ),
-                  ],
-                ),
-              )
             ],
-          ));
+          ),
+        )
+      ],
+    ));
   }
 
   Widget sideBar(String title, IconData icon, int int) {

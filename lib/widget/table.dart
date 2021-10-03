@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/groupModel.dart';
+import 'package:web_test/model/productModel.dart';
 import 'package:web_test/url.dart';
 
 // ignore: must_be_immutable
@@ -75,6 +76,8 @@ class CustomTable extends StatelessWidget {
                                           padding: EdgeInsets.only(right: 10),
                                           child: CircleAvatar(
                                             backgroundImage: NetworkImage(
+                                              model == ProductModel ? imageUrls +
+                                                    data[i].mainImage.toString() :
                                                 imageUrls +
                                                     data[i].image.toString()),
                                           ),
@@ -117,6 +120,8 @@ class CustomTable extends StatelessWidget {
       return data[i].brandName.toString();
     } else if (model == GroupModel) {
       return data[i].groupName.toString();
+    } else if (model == ProductModel) {
+      return data[i].productName.toString();
     } else {
       return data[i].subCategoryName.toString();
     }
@@ -127,6 +132,8 @@ class CustomTable extends StatelessWidget {
       return data[i].brandDes.toString();
     } else if (model == GroupModel) {
       return '';
+    } else if (model == ProductModel) {
+      return data[i].productDes.toString();
     } else {
       return 'Is Active ${data[i].isActive.toString() == "0" ? 'Yes' : "No"}';
     }

@@ -10,6 +10,10 @@ import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/groupModel.dart';
 import 'package:web_test/model/subCategoryModel.dart';
+import 'package:web_test/page/product/provider/cate_provider.dart';
+import 'package:web_test/page/product/provider/provider_image.dart';
+import 'package:web_test/page/product/widget/field.dart';
+import 'package:web_test/page/product/widget/image.dart';
 import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:provider/provider.dart';
@@ -30,32 +34,6 @@ class ProductAdd extends StatefulWidget {
 class _ProductAddState extends State<ProductAdd> {
   TextStyle font = GoogleFonts.getFont('Bebas Neue', fontSize: 18);
 
-  CategoryModel selectCategory = CategoryModel(
-      categoryName: 'Select Category',
-      id: 'id',
-      isActive: 'isActive',
-      image: 'image',
-      createdAt: 'createdAt');
-
-  SubCategoryModel selectSubCategory = SubCategoryModel(
-      subCategoryName: 'Select Sub Category',
-      id: 'id',
-      image: 'image',
-      isActive: ' isActive',
-      categoryId: 'categoryId',
-      createdAt: 'createdAt');
-
-  BrandModel brand = BrandModel(
-      brandName: 'Select Brand',
-      id: 'id',
-      brandDes: 'brandDes',
-      createdAt: 'createdAt');
-
-  GroupModel group = GroupModel(
-    groupName: 'Select Group',
-    id: 'id',
-    createdAt: 'createdAt',
-  );
   TextEditingController _productController = TextEditingController();
   TextEditingController _desController = TextEditingController();
   TextEditingController _stockController = TextEditingController();
@@ -71,14 +49,6 @@ class _ProductAddState extends State<ProductAdd> {
   bool isloading = false;
   bool isReturn = true;
   bool isSwitched = false;
-  bool imageLoad = false;
-
-  var image0;
-  var image1;
-  var image2;
-  var image3;
-  var image4;
-  var image5;
 
   @override
   void initState() {
@@ -88,7 +58,7 @@ class _ProductAddState extends State<ProductAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    //  backgroundColor: bkColor,
+      //  backgroundColor: bkColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -111,7 +81,7 @@ class _ProductAddState extends State<ProductAdd> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 20, right: 20, bottom: 18),
-                        child: field(
+                        child: CusField(
                           controller: _productController,
                           hintText: 'Product',
                           validation: (v) => productValidation(v),
@@ -123,7 +93,7 @@ class _ProductAddState extends State<ProductAdd> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 20, right: 20, bottom: 20),
-                        child: field(
+                        child: CusField(
                             controller: _desController,
                             width: 350,
                             maxLine: 3,
@@ -141,27 +111,27 @@ class _ProductAddState extends State<ProductAdd> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: mainImage(0),
+                        child: CusImage(i: 0),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: mainImage(1),
+                        child: CusImage(i: 1),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: mainImage(2),
+                        child: CusImage(i: 2),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: mainImage(3),
+                        child: CusImage(i: 3),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: mainImage(4),
+                        child: CusImage(i: 4),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: mainImage(5),
+                        child: CusImage(i: 5),
                       ),
                     ],
                   ),
@@ -194,61 +164,67 @@ class _ProductAddState extends State<ProductAdd> {
                     height: 30,
                   ),
                   // category and sub category  ↓ ↓ ↓
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        child: CusDropDown(
-                          stockWidth: 2,
-                          height: 40,
-                          width: 220,
-                          items: categoryItem(),
-                          onChange: (v) {},
-                          selectName: selectCategory.categoryName.toString(),
+                  Consumer<CateProvider>(builder: (_, v, c) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          child: CusDropDown(
+                            stockWidth: 2,
+                            height: 40,
+                            width: 220,
+                            items: categoryItem(v),
+                            onChange: (v) {},
+                            selectName:
+                                v.selectCategory.categoryName.toString(),
+                          ),
                         ),
-                      ),
-                      Container(
-                        child: CusDropDown(
-                          stockWidth: 2,
-                          height: 40,
-                          width: 220,
-                          items: subcategoryItem(),
-                          onChange: (v) {},
-                          selectName:
-                              selectSubCategory.subCategoryName.toString(),
+                        Container(
+                          child: CusDropDown(
+                            stockWidth: 2,
+                            height: 40,
+                            width: 220,
+                            items: subcategoryItem(v),
+                            onChange: (v) {},
+                            selectName:
+                                v.selectSubCategory.subCategoryName.toString(),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                   SizedBox(
                     height: 30,
                   ),
                   // brand and group  ↓ ↓ ↓
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        child: CusDropDown(
-                          stockWidth: 2,
-                          height: 40,
-                          width: 220,
-                          items: brandItem(),
-                          onChange: (v) {},
-                          selectName: brand.brandName.toString(),
+                  Consumer<CateProvider>(builder: (_, v, c) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          child: CusDropDown(
+                            stockWidth: 2,
+                            height: 40,
+                            width: 220,
+                            items: brandItem(v),
+                            onChange: (v) {},
+                            selectName: v.brand.brandName.toString(),
+                          ),
                         ),
-                      ),
-                      Container(
-                        child: CusDropDown(
-                          stockWidth: 2,
-                          height: 40,
-                          width: 220,
-                          items: groupItem(),
-                          onChange: (v) {},
-                          selectName: group.groupName.toString(),
+                        Container(
+                          child: CusDropDown(
+                            stockWidth: 2,
+                            height: 40,
+                            width: 220,
+                            items: groupItem(v),
+                            onChange: (v) {},
+                            selectName: v.group.groupName.toString(),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
+
                   SizedBox(
                     height: 30,
                   ),
@@ -256,21 +232,21 @@ class _ProductAddState extends State<ProductAdd> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      field(
+                      CusField(
                           controller: _stockController,
                           maxLine: 1,
                           hintText: 'Stock',
                           validation: (v) => stockValidation(v),
                           type: TextInputType.number,
                           width: 100),
-                      field(
+                      CusField(
                           controller: _mrpController,
                           maxLine: 1,
                           hintText: 'MRP',
                           validation: (v) => mrpValidation(v),
                           width: 100,
                           type: TextInputType.number),
-                      field(
+                      CusField(
                           controller: _sellingController,
                           maxLine: 1,
                           hintText: 'Sell Rate',
@@ -285,7 +261,7 @@ class _ProductAddState extends State<ProductAdd> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 20, right: 20, bottom: 20),
-                        child: field(
+                        child: CusField(
                             controller: _proCodeController,
                             maxLine: 1,
                             hintText: 'Product Code',
@@ -296,7 +272,7 @@ class _ProductAddState extends State<ProductAdd> {
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 20, right: 20, bottom: 20),
-                        child: field(
+                        child: CusField(
                             controller: _deleviryCostController,
                             maxLine: 1,
                             hintText: 'Delivery Cost',
@@ -324,86 +300,12 @@ class _ProductAddState extends State<ProductAdd> {
               ),
             ),
           ),
-          imageLoad == true
-              ? Center(child: IsLoader())
-              : IgnorePointer(
-                  ignoring: true, child: Container(width: 1, height: 1))
-        ],
-      ),
-    );
-  }
-
-  Widget mainImage(int i) {
-    return Column(
-      children: [
-        removeButton(i),
-        InkWell(
-            child: Container(
-              child: DottedBorder(
-                  strokeWidth: 1,
-                  dashPattern: [8, 1],
-                  borderType: BorderType.RRect,
-                  radius: Radius.circular(6),
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    child: Center(child: imageShow(i)),
-                  )),
-            ),
-            onTap: () {
-              imagePick(imagechange, i);
-            }),
-      ],
-    );
-  }
-
-  removeButton(i) {
-    return IconButton(
-        icon: Icon(
-          Icons.delete,
-          color: Colors.red,
-        ),
-        onPressed: () => imageRemove(i));
-  }
-
-  Widget field(
-      {required controller,
-      required maxLine,
-      required hintText,
-      required width,
-      required Function validation,
-      required TextInputType type}) {
-    return Container(
-      width: width,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Text(hintText),
-            ],
-          ),
-          SizedBox(
-            height: 6,
-          ),
-          Container(
-            width: width,
-            child: TextFormField(
-              inputFormatters: type == TextInputType.number
-                  ? [FilteringTextInputFormatter.digitsOnly]
-                  : [],
-              keyboardType: type,
-              maxLines: maxLine,
-              controller: controller,
-              validator: (v) => validation(v),
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10))),
-            ),
-          ),
+          Consumer<ProviderImage>(builder: (_, v, w) {
+            return v.isLoading == true
+                ? Center(child: IsLoader())
+                : IgnorePointer(
+                    ignoring: true, child: Container(width: 1, height: 1));
+          })
         ],
       ),
     );
@@ -413,130 +315,106 @@ class _ProductAddState extends State<ProductAdd> {
       {required String text,
       required bool value,
       required Function(bool) onchange}) {
-    return Container(
-      width: 250,
-      child: Row(
-        children: [
-          SizedBox(width: 30),
-          Text(text,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          Switch(
-            value: value,
-            onChanged: onchange,
-            inactiveThumbColor: Colors.red,
-            activeTrackColor: Colors.grey,
-            activeColor: Colors.greenAccent,
-          ),
-        ],
+    return RepaintBoundary(
+      child: Container(
+        width: 250,
+        child: Row(
+          children: [
+            SizedBox(width: 30),
+            Text(text,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Switch(
+              value: value,
+              onChanged: onchange,
+              inactiveThumbColor: Colors.red,
+              activeTrackColor: Colors.grey,
+              activeColor: Colors.greenAccent,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  categoryItem() {
-    setState(() {
-      isloading = true;
-    });
+  categoryItem(CateProvider c) {
     return context.read<PHP_DB_Category>().data.map((value) {
       return DropdownMenuItem<String>(
         onTap: () {
-          setState(() {
-            selectCategory = CategoryModel(
-                categoryName: value.categoryName,
-                id: value.id,
-                image: value.image,
-                isActive: value.isActive,
-                createdAt: value.createdAt);
-            selectSubCategory = SubCategoryModel(
-                subCategoryName: 'Select Sub Category',
-                id: 'id',
-                image: 'image',
-                isActive: ' isActive',
-                categoryId: 'categoryId',
-                createdAt: 'createdAt');
-          });
+          c.changeCategory(CategoryModel(
+              categoryName: value.categoryName,
+              id: value.id,
+              image: value.image,
+              isActive: value.isActive,
+              createdAt: value.createdAt));
+          c.changeSubCategory(SubCategoryModel(
+              subCategoryName: 'Select Sub Category',
+              id: 'id',
+              image: 'image',
+              isActive: ' isActive',
+              categoryId: 'categoryId',
+              createdAt: 'createdAt'));
         },
         value: value.categoryName,
-        child: selectedText(selectCategory.id.toString(),
+        child: selectedText(c.selectCategory.id.toString(),
             value.categoryName.toString(), value.id.toString()),
       );
     }).toList();
     // ignore: dead_code
-    setState(() {
-      isloading = false;
-    });
   }
 
-  subcategoryItem() {
-    setState(() {
-      isloading = true;
-    });
+  subcategoryItem(CateProvider c) {
     return context
         .read<PHP_DB_SubCategory>()
         .data
-        .where((element) => element.categoryId == selectCategory.id)
+        .where((element) => element.categoryId == c.selectCategory.id)
         .map((value) {
       return DropdownMenuItem<String>(
         onTap: () {
-          setState(() {
-            selectSubCategory = SubCategoryModel(
-                subCategoryName: value.subCategoryName,
-                id: value.id,
-                image: value.image,
-                isActive: value.isActive,
-                categoryId: value.categoryId,
-                createdAt: value.createdAt);
-          });
+          c.changeSubCategory(SubCategoryModel(
+              subCategoryName: value.subCategoryName,
+              id: value.id,
+              image: value.image,
+              isActive: value.isActive,
+              categoryId: value.categoryId,
+              createdAt: value.createdAt));
         },
         value: value.subCategoryName,
-        child: selectedText(selectSubCategory.id.toString(),
+        child: selectedText(c.selectSubCategory.id.toString(),
             value.subCategoryName.toString(), value.id.toString()),
       );
     }).toList();
     // ignore: dead_code
-    setState(() {
-      isloading = false;
-    });
   }
 
-  brandItem() {
-    setState(() {
-      isloading = true;
-    });
+  brandItem(CateProvider c) {
     return context.read<PHP_DB_Brand>().data.map((value) {
       return DropdownMenuItem<String>(
           onTap: () {
-            setState(() {
-              brand = BrandModel(
-                brandName: value.brandName,
-                brandDes: value.brandDes,
-                id: value.id,
-                createdAt: value.createdAt,
-              );
-            });
+            c.changeBrand(BrandModel(
+              brandName: value.brandName,
+              brandDes: value.brandDes,
+              id: value.id,
+              createdAt: value.createdAt,
+            ));
           },
           value: value.brandName,
-          child: selectedText(brand.id, value.brandName, value.id));
+          child: selectedText(c.brand.id, value.brandName, value.id));
     }).toList();
     // ignore: dead_code
-    setState(() {
-      isloading = false;
-    });
   }
 
-  groupItem() {
+  groupItem(CateProvider c) {
     return context.read<PHP_DB_Group>().data.map((value) {
       return DropdownMenuItem<String>(
         onTap: () {
-          setState(() {
-            group = GroupModel(
-              groupName: value.groupName,
-              id: value.id,
-              createdAt: value.createdAt,
-            );
-          });
+          c.changeGroup(GroupModel(
+            groupName: value.groupName,
+            id: value.id,
+            createdAt: value.createdAt,
+          ));
         },
         value: value.groupName,
-        child: selectedText(group.id, value.groupName, value.id),
+        child: selectedText(c.group.id, value.groupName, value.id),
       );
     }).toList();
 
@@ -659,94 +537,24 @@ class _ProductAddState extends State<ProductAdd> {
     }
   }
 
-  imagePick(changeValue, i) async {
-    setState(() {
-      imageLoad = true;
-    });
-    await ImagePickerWeb.getImage(outputType: ImageType.bytes).then((value) {
-      changeValue(value, i);
-      setState(() {
-        imageLoad = false;
-      });
-    }).catchError((e) {
-      debugPrint(e);
-      setState(() {
-        imageLoad = false;
-      });
-    }).onError((error, stackTrace) {
-      debugPrint(error.toString());
-      setState(() {
-        imageLoad = false;
-      });
-    });
-  }
-
-  imagechange(v, i) {
-  // print(v);
-    setState(() {
-      if (i == 0)
-        return image0 = v;
-      else if (i == 1)
-        return image1 = v;
-      else if (i == 2)
-        return image2 = v;
-      else if (i == 3)
-        return image3 = v;
-      else if (i == 4)
-        return image4 = v;
-      else
-        return image5 = v;
-    });
-  }
-
-  imageRemove(i) {
-    setState(() {
-      if (i == 0)
-        return image0 = null;
-      else if (i == 1)
-        return image1 = null;
-      else if (i == 2)
-        return image2 = null;
-      else if (i == 3)
-        return image3 = null;
-      else if (i == 4)
-        return image4 = null;
-      else
-        return image5 = null;
-    });
-  }
-
-  imageShow(i) {
-    if (i == 0)
-      return image0 == null ? Text('Main Image') : Image.memory(image0);
-    else if (i == 1)
-      return image1 == null ? Text('Image 1') : Image.memory(image1);
-    else if (i == 2)
-      return image2 == null ? Text('Image 2') : Image.memory(image2);
-    else if (i == 3)
-      return image3 == null ? Text('Image 3') : Image.memory(image3);
-    else if (i == 4)
-      return image4 == null ? Text('Image 4') : Image.memory(image4);
-    else
-      return image5 == null ? Text('Image 5') : Image.memory(image5);
-  }
-
   void appProduct() {
+    ProviderImage image = context.watch<ProviderImage>();
+    CateProvider c = context.watch<CateProvider>();
     context.read<PHP_DB_Product>().addData(
         name: _productController.text,
         des: _desController.text,
-        mainImage: base64Encode(image0),
-        image1: base64Encode(image1),
-        image2: base64Encode(image2),
-        image3: base64Encode(image3),
-        image4:image4 == null ? 'null' : base64Encode(image4),
-        image5:image5 == null ? 'null' : base64Encode(image5),
+        mainImage: base64Encode(image.image0),
+        image1: base64Encode(image.image1),
+        image2: base64Encode(image.image2),
+        image3: base64Encode(image.image3),
+        image4: image.image4 == null ? 'null' : base64Encode(image.image4),
+        image5: image.image5 == null ? 'null' : base64Encode(image.image5),
         isActive: isSwitched,
         returnAvailable: isReturn,
-        categoryId: selectCategory.id.toString(),
-        subCategoryId: selectSubCategory.id.toString(),
-        brandId: brand.id.toString(),
-        groupId: group.id.toString(),
+        categoryId: c.selectCategory.id.toString(),
+        subCategoryId: c.selectSubCategory.id.toString(),
+        brandId: c.brand.id.toString(),
+        groupId: c.group.id.toString(),
         mrp: _mrpController.text,
         stock: _stockController.text,
         sellingRate: _sellingController.text,

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_test/model/brandModel.dart';
+import 'package:web_test/model/productModel.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
 
@@ -19,8 +20,8 @@ class PHP_DB_Product with ChangeNotifier {
   // ADD DATA TO PHP SERVER
   bool dataload = false;
   bool dataAdd = false;
-  List<BrandModel> data = [];
-  List<BrandModel> searchdata = [];
+  List<ProductModel> data = [];
+  List<ProductModel> searchdata = [];
   // ignore: avoid_init_to_null
   var searchValue = null;
   // ignore: avoid_init_to_null
@@ -107,8 +108,8 @@ class PHP_DB_Product with ChangeNotifier {
           notifyListeners();
 
           List datas = json.decode(value.body)['data'];
-          debugPrint(datas.toString());
-          // data = datas.map((e) => BrandModel.fromJson(e)).toList();
+         // debugPrint(datas.toString());
+          data = datas.map((e) => ProductModel.fromJson(e)).toList();
           notifyListeners();
           searchValue == null
               ? debugPrint('Not In Search Mode')
@@ -131,11 +132,24 @@ class PHP_DB_Product with ChangeNotifier {
   }
 
   Future<void> delete(
-      {required String id, required BuildContext context}) async {
+      {required String id,
+      required String mainImage,
+      required String image1,
+      required String image2,
+      required String image3,
+      required String image4,
+      required String image5,
+      required BuildContext context}) async {
     var _map = {
       "id": id,
+      "image0": mainImage,
+      "image1": image1,
+      "image2": image2,
+      "image3": image3,
+      "image4": image4,
+      "image5": image5,
     };
-    //   debugPrint(id);
+
     var _url = Uri.parse('${urls}product/delete.php?api=$api');
     await http.delete(_url, body: json.encode(_map)).then((value) {
       debugPrint(value.body);
@@ -225,7 +239,7 @@ class PHP_DB_Product with ChangeNotifier {
       notifyListeners();
       ////////////////
       searchdata = data
-          .where((element) => element.brandName
+          .where((element) => element.productName
               .toString()
               .toLowerCase()
               .contains(name.toString().toLowerCase()))
