@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';

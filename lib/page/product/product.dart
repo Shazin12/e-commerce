@@ -1,14 +1,9 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
-import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/productModel.dart';
-import 'package:web_test/page/product/prodict_edit.dart';
+import 'package:web_test/page/product/product_edit.dart';
 import 'package:web_test/page/product/product_add.dart';
-import 'package:web_test/service/PHP_DB_Brand.dart';
-import 'package:web_test/service/PHP_DB_Category.dart';
-import 'package:web_test/service/PHP_DB_Group.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
-import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:provider/provider.dart';
 import 'package:web_test/widget/table.dart';
 

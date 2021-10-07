@@ -64,7 +64,7 @@ class CusField extends StatelessWidget {
               keyboardType: type,
               maxLines: maxLine,
               controller: controller,
-              validator: (v) => validation(v),
+              validator: (v) => validation(v,hintText),
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10))),

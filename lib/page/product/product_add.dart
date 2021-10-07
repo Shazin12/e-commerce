@@ -3,22 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:web_test/model/brandModel.dart';
-import 'package:web_test/model/categoryModel.dart';
-import 'package:web_test/model/groupModel.dart';
-import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
+import 'package:web_test/page/product/widget/bottomSheat.dart';
+import 'package:web_test/page/product/widget/drop.dart';
 import 'package:web_test/page/product/widget/field.dart';
 import 'package:web_test/page/product/widget/image.dart';
-import 'package:web_test/service/PHP_DB_Brand.dart';
-import 'package:web_test/service/PHP_DB_Category.dart';
+import 'package:web_test/page/product/widget/validation.dart';
 import 'package:provider/provider.dart';
-import 'package:web_test/service/PHP_DB_Group.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
-import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
-import 'package:web_test/widget/dropDown.dart';
 import 'package:web_test/widget/loader.dart';
 
 class ProductAdd extends StatefulWidget {
@@ -86,7 +80,7 @@ class _ProductAddState extends State<ProductAdd> {
                         child: CusField(
                           controller: _productController,
                           hintText: 'Product',
-                          validation: (v) => productValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           maxLine: 1,
                           type: TextInputType.text,
                           width: 350,
@@ -99,7 +93,8 @@ class _ProductAddState extends State<ProductAdd> {
                             controller: _desController,
                             width: 350,
                             maxLine: 3,
-                            validation: (v) => productDesValidation(v),
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
                             type: TextInputType.text,
                             hintText: 'Description'),
                       )
@@ -165,67 +160,8 @@ class _ProductAddState extends State<ProductAdd> {
                   SizedBox(
                     height: 30,
                   ),
-                  // category and sub category  ↓ ↓ ↓
-                  Consumer<CateProvider>(builder: (_, v, c) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: categoryItem(v),
-                            onChange: (v) {},
-                            selectName:
-                                v.selectCategory.categoryName.toString(),
-                          ),
-                        ),
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: subcategoryItem(v),
-                            onChange: (v) {},
-                            selectName:
-                                v.selectSubCategory.subCategoryName.toString(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  // brand and group  ↓ ↓ ↓
-                  Consumer<CateProvider>(builder: (_, v, c) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: brandItem(v),
-                            onChange: (v) {},
-                            selectName: v.brand.brandName.toString(),
-                          ),
-                        ),
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: groupItem(v),
-                            onChange: (v) {},
-                            selectName: v.group.groupName.toString(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+                  // [category ][sub category] [brand] [group]  ↓ ↓ ↓
+                  Drop(),
 
                   SizedBox(
                     height: 30,
@@ -238,14 +174,14 @@ class _ProductAddState extends State<ProductAdd> {
                           controller: _stockController,
                           maxLine: 1,
                           hintText: 'Stock',
-                          validation: (v) => stockValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           type: TextInputType.number,
                           width: 100),
                       CusField(
                           controller: _mrpController,
                           maxLine: 1,
                           hintText: 'MRP',
-                          validation: (v) => mrpValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           width: 100,
                           type: TextInputType.number),
                       CusField(
@@ -253,7 +189,7 @@ class _ProductAddState extends State<ProductAdd> {
                           maxLine: 1,
                           hintText: 'Sell Rate',
                           width: 100,
-                          validation: (v) => sellingValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           type: TextInputType.number),
                     ],
                   ),
@@ -268,7 +204,8 @@ class _ProductAddState extends State<ProductAdd> {
                             maxLine: 1,
                             hintText: 'Product Code',
                             width: 200,
-                            validation: (v) => productCodeValidation(v),
+                            validation: (v, h) => Validate()
+                                .productCodeValidation(v, h, context, "id"),
                             type: TextInputType.text),
                       ),
                       Padding(
@@ -279,7 +216,8 @@ class _ProductAddState extends State<ProductAdd> {
                             maxLine: 1,
                             hintText: 'Delivery Cost',
                             width: 200,
-                            validation: (v) => deleviryCostValidation(v),
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
                             type: TextInputType.number),
                       ),
                       Padding(
@@ -290,7 +228,8 @@ class _ProductAddState extends State<ProductAdd> {
                             maxLine: 1,
                             hintText: 'Pro Group Shot Name',
                             width: 200,
-                            validation: (v) => productValidation(v),
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
                             type: TextInputType.text),
                       ),
                       Padding(
@@ -349,94 +288,6 @@ class _ProductAddState extends State<ProductAdd> {
     );
   }
 
-  categoryItem(CateProvider c) {
-    return context.read<PHP_DB_Category>().data.map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeCategory(CategoryModel(
-              categoryName: value.categoryName,
-              id: value.id,
-              image: value.image,
-              isActive: value.isActive,
-              createdAt: value.createdAt));
-          c.changeSubCategory(SubCategoryModel(
-              subCategoryName: 'Select Sub Category',
-              id: 'id',
-              image: 'image',
-              isActive: ' isActive',
-              categoryId: 'categoryId',
-              createdAt: 'createdAt'));
-        },
-        value: value.categoryName,
-        child: selectedText(c.selectCategory.id.toString(),
-            value.categoryName.toString(), value.id.toString()),
-      );
-    }).toList();
-    // ignore: dead_code
-  }
-
-  subcategoryItem(CateProvider c) {
-    return context
-        .read<PHP_DB_SubCategory>()
-        .data
-        .where((element) => element.categoryId == c.selectCategory.id)
-        .map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeSubCategory(SubCategoryModel(
-              subCategoryName: value.subCategoryName,
-              id: value.id,
-              image: value.image,
-              isActive: value.isActive,
-              categoryId: value.categoryId,
-              createdAt: value.createdAt));
-        },
-        value: value.subCategoryName,
-        child: selectedText(c.selectSubCategory.id.toString(),
-            value.subCategoryName.toString(), value.id.toString()),
-      );
-    }).toList();
-    // ignore: dead_code
-  }
-
-  brandItem(CateProvider c) {
-    return context.read<PHP_DB_Brand>().data.map((value) {
-      return DropdownMenuItem<String>(
-          onTap: () {
-            c.changeBrand(BrandModel(
-              brandName: value.brandName,
-              brandDes: value.brandDes,
-              id: value.id,
-              createdAt: value.createdAt,
-            ));
-          },
-          value: value.brandName,
-          child: selectedText(c.brand.id, value.brandName, value.id));
-    }).toList();
-    // ignore: dead_code
-  }
-
-  groupItem(CateProvider c) {
-    return context.read<PHP_DB_Group>().data.map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeGroup(GroupModel(
-            groupName: value.groupName,
-            id: value.id,
-            createdAt: value.createdAt,
-          ));
-        },
-        value: value.groupName,
-        child: selectedText(c.group.id, value.groupName, value.id),
-      );
-    }).toList();
-
-    // ignore: dead_code
-    setState(() {
-      isloading = false;
-    });
-  }
-
   Widget similarPro() {
     return Container(
       width: 250,
@@ -449,34 +300,23 @@ class _ProductAddState extends State<ProductAdd> {
             children: [
               Text('Similar Product', style: font),
               SizedBox(width: 20),
-              button(() {}, 'Pick')
+              button(() {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                      //the rounded corner is created here
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    context: context,
+                    builder: (_) {
+                      return CusBottomSheet();
+                    });
+              }, 'Pick')
             ],
           ),
         ],
       ),
       decoration: BoxDecoration(
           color: bkColor, borderRadius: BorderRadius.circular(14)),
-    );
-  }
-
-  selectedText(String id, String name, String id2) {
-    return Row(
-      children: [
-        Container(
-          width: id == id2 ? 10 : 0,
-          height: id == id2 ? 10 : 0,
-          decoration: BoxDecoration(color: bkColorO8, shape: BoxShape.circle),
-        ),
-        SizedBox(
-          width: 8,
-        ),
-        Container(
-            width: 192,
-            child: Text(
-              name.toString(),
-              overflow: TextOverflow.ellipsis,
-            )),
-      ],
     );
   }
 
@@ -492,62 +332,6 @@ class _ProductAddState extends State<ProductAdd> {
             style: font,
           )),
     );
-  }
-
-  productValidation(v) {
-    if (v.isEmpty) {
-      return 'Product Name Is Empty';
-    } else {
-      return null;
-    }
-  }
-
-  productDesValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Product Description Is Empty';
-    } else {
-      return null;
-    }
-  }
-
-  stockValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  sellingValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  mrpValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  productCodeValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  deleviryCostValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Deleviry Cost Is Empty';
-    } else {
-      return null;
-    }
   }
 
   void appProduct() {

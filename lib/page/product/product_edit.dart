@@ -10,8 +10,10 @@ import 'package:web_test/model/productModel.dart';
 import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
+import 'package:web_test/page/product/widget/drop.dart';
 import 'package:web_test/page/product/widget/field.dart';
 import 'package:web_test/page/product/widget/image.dart';
+import 'package:web_test/page/product/widget/validation.dart';
 import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +21,9 @@ import 'package:web_test/service/PHP_DB_Group.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
-import 'package:web_test/widget/dropDown.dart';
 import 'package:web_test/widget/loader.dart';
 
+// ignore: must_be_immutable
 class ProductEdit extends StatefulWidget {
   String id;
   ProductEdit({Key? key, required this.id}) : super(key: key);
@@ -53,11 +55,7 @@ class _ProductEditState extends State<ProductEdit> {
   @override
   void initState() {
     super.initState();
-    List<ProductModel> pro = context
-        .read<PHP_DB_Product>()
-        .data
-        .where((element) => element.id == widget.id)
-        .toList();
+
     ProviderImage image = context.read<ProviderImage>();
     CateProvider cate = context.read<CateProvider>();
 
@@ -65,6 +63,11 @@ class _ProductEditState extends State<ProductEdit> {
     PHP_DB_SubCategory subCategory = context.read<PHP_DB_SubCategory>();
     PHP_DB_Brand brand = context.read<PHP_DB_Brand>();
     PHP_DB_Group group = context.read<PHP_DB_Group>();
+    List<ProductModel> pro = context
+        .read<PHP_DB_Product>()
+        .data
+        .where((element) => element.id == widget.id)
+        .toList();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       setState(() {
         _productController.text = pro[0].productName;
@@ -74,6 +77,7 @@ class _ProductEditState extends State<ProductEdit> {
         _sellingController.text = pro[0].selling;
         _proCodeController.text = pro[0].productCode;
         _deleviryCostController.text = pro[0].deliveryCost;
+        _groupProductShotName.text = pro[0].shotName;
         image.changeImage0(pro[0].mainImage);
         image.changeImage1(pro[0].image1);
         image.changeImage2(pro[0].image2);
@@ -82,7 +86,38 @@ class _ProductEditState extends State<ProductEdit> {
         image.changeImage5(pro[0].image5);
         isSwitched = pro[0].isActive == "0" ? true : false;
         isReturn = pro[0].returnAvailable == "0" ? true : false;
-       // cate.changeCategory(v);
+        // category
+        List<CategoryModel> c = category.data
+            .where((element) => element.id == pro[0].categoryId)
+            .toList();
+
+        CategoryModel cc = cate.selectCategory;
+
+        cate.changeCategory(c.length > 0 ? c[0] : cc);
+        // subcategory
+        List<SubCategoryModel> sc = subCategory.data
+            .where((element) => element.id == pro[0].subCategoryId)
+            .toList();
+
+        SubCategoryModel sscc = cate.selectSubCategory;
+
+        cate.changeSubCategory(sc.length > 0 ? sc[0] : sscc);
+        // brand
+        List<BrandModel> b = brand.data
+            .where((element) => element.id == pro[0].brandId)
+            .toList();
+
+        BrandModel bb = cate.brand;
+
+        cate.changeBrand(b.length > 0 ? b[0] : bb);
+        // group
+        List<GroupModel> g = group.data
+            .where((element) => element.id == pro[0].groupId)
+            .toList();
+
+        GroupModel gg = cate.group;
+
+        cate.changeGroup(g.length > 0 ? g[0] : gg);
       });
     });
   }
@@ -116,7 +151,7 @@ class _ProductEditState extends State<ProductEdit> {
                         child: CusField(
                           controller: _productController,
                           hintText: 'Product',
-                          validation: (v) => productValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           maxLine: 1,
                           type: TextInputType.text,
                           width: 350,
@@ -129,7 +164,8 @@ class _ProductEditState extends State<ProductEdit> {
                             controller: _desController,
                             width: 350,
                             maxLine: 3,
-                            validation: (v) => productDesValidation(v),
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
                             type: TextInputType.text,
                             hintText: 'Description'),
                       )
@@ -195,67 +231,8 @@ class _ProductEditState extends State<ProductEdit> {
                   SizedBox(
                     height: 30,
                   ),
-                  // category and sub category  ↓ ↓ ↓
-                  Consumer<CateProvider>(builder: (_, v, c) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: categoryItem(v),
-                            onChange: (v) {},
-                            selectName:
-                                v.selectCategory.categoryName.toString(),
-                          ),
-                        ),
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: subcategoryItem(v),
-                            onChange: (v) {},
-                            selectName:
-                                v.selectSubCategory.subCategoryName.toString(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  // brand and group  ↓ ↓ ↓
-                  Consumer<CateProvider>(builder: (_, v, c) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: brandItem(v),
-                            onChange: (v) {},
-                            selectName: v.brand.brandName.toString(),
-                          ),
-                        ),
-                        Container(
-                          child: CusDropDown(
-                            stockWidth: 2,
-                            height: 40,
-                            width: 220,
-                            items: groupItem(v),
-                            onChange: (v) {},
-                            selectName: v.group.groupName.toString(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+                  // [category ][sub category] [brand] [group]  ↓ ↓ ↓
+                  Drop(),
 
                   SizedBox(
                     height: 30,
@@ -268,14 +245,14 @@ class _ProductEditState extends State<ProductEdit> {
                           controller: _stockController,
                           maxLine: 1,
                           hintText: 'Stock',
-                          validation: (v) => stockValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           type: TextInputType.number,
                           width: 100),
                       CusField(
                           controller: _mrpController,
                           maxLine: 1,
                           hintText: 'MRP',
-                          validation: (v) => mrpValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           width: 100,
                           type: TextInputType.number),
                       CusField(
@@ -283,7 +260,7 @@ class _ProductEditState extends State<ProductEdit> {
                           maxLine: 1,
                           hintText: 'Sell Rate',
                           width: 100,
-                          validation: (v) => sellingValidation(v),
+                          validation: (v, n) => Validate().commonValidate(v, n),
                           type: TextInputType.number),
                     ],
                   ),
@@ -298,7 +275,8 @@ class _ProductEditState extends State<ProductEdit> {
                             maxLine: 1,
                             hintText: 'Product Code',
                             width: 200,
-                            validation: (v) => productCodeValidation(v),
+                            validation: (v, h) =>
+                                Validate().productCodeValidation(v, h,context,widget.id),
                             type: TextInputType.text),
                       ),
                       Padding(
@@ -309,8 +287,21 @@ class _ProductEditState extends State<ProductEdit> {
                             maxLine: 1,
                             hintText: 'Delivery Cost',
                             width: 200,
-                            validation: (v) => deleviryCostValidation(v),
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
                             type: TextInputType.number),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 20),
+                        child: CusField(
+                            controller: _groupProductShotName,
+                            maxLine: 1,
+                            hintText: 'Pro Group Shot Name',
+                            width: 200,
+                            validation: (v, n) =>
+                                Validate().commonValidate(v, n),
+                            type: TextInputType.text),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -368,94 +359,6 @@ class _ProductEditState extends State<ProductEdit> {
     );
   }
 
-  categoryItem(CateProvider c) {
-    return context.read<PHP_DB_Category>().data.map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeCategory(CategoryModel(
-              categoryName: value.categoryName,
-              id: value.id,
-              image: value.image,
-              isActive: value.isActive,
-              createdAt: value.createdAt));
-          c.changeSubCategory(SubCategoryModel(
-              subCategoryName: 'Select Sub Category',
-              id: 'id',
-              image: 'image',
-              isActive: ' isActive',
-              categoryId: 'categoryId',
-              createdAt: 'createdAt'));
-        },
-        value: value.categoryName,
-        child: selectedText(c.selectCategory.id.toString(),
-            value.categoryName.toString(), value.id.toString()),
-      );
-    }).toList();
-    // ignore: dead_code
-  }
-
-  subcategoryItem(CateProvider c) {
-    return context
-        .read<PHP_DB_SubCategory>()
-        .data
-        .where((element) => element.categoryId == c.selectCategory.id)
-        .map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeSubCategory(SubCategoryModel(
-              subCategoryName: value.subCategoryName,
-              id: value.id,
-              image: value.image,
-              isActive: value.isActive,
-              categoryId: value.categoryId,
-              createdAt: value.createdAt));
-        },
-        value: value.subCategoryName,
-        child: selectedText(c.selectSubCategory.id.toString(),
-            value.subCategoryName.toString(), value.id.toString()),
-      );
-    }).toList();
-    // ignore: dead_code
-  }
-
-  brandItem(CateProvider c) {
-    return context.read<PHP_DB_Brand>().data.map((value) {
-      return DropdownMenuItem<String>(
-          onTap: () {
-            c.changeBrand(BrandModel(
-              brandName: value.brandName,
-              brandDes: value.brandDes,
-              id: value.id,
-              createdAt: value.createdAt,
-            ));
-          },
-          value: value.brandName,
-          child: selectedText(c.brand.id, value.brandName, value.id));
-    }).toList();
-    // ignore: dead_code
-  }
-
-  groupItem(CateProvider c) {
-    return context.read<PHP_DB_Group>().data.map((value) {
-      return DropdownMenuItem<String>(
-        onTap: () {
-          c.changeGroup(GroupModel(
-            groupName: value.groupName,
-            id: value.id,
-            createdAt: value.createdAt,
-          ));
-        },
-        value: value.groupName,
-        child: selectedText(c.group.id, value.groupName, value.id),
-      );
-    }).toList();
-
-    // ignore: dead_code
-    setState(() {
-      isloading = false;
-    });
-  }
-
   Widget similarPro() {
     return Container(
       width: 250,
@@ -478,27 +381,6 @@ class _ProductEditState extends State<ProductEdit> {
     );
   }
 
-  selectedText(String id, String name, String id2) {
-    return Row(
-      children: [
-        Container(
-          width: id == id2 ? 10 : 0,
-          height: id == id2 ? 10 : 0,
-          decoration: BoxDecoration(color: bkColorO8, shape: BoxShape.circle),
-        ),
-        SizedBox(
-          width: 8,
-        ),
-        Container(
-            width: 192,
-            child: Text(
-              name.toString(),
-              overflow: TextOverflow.ellipsis,
-            )),
-      ],
-    );
-  }
-
   Widget button(Function onPress, text) {
     return Center(
       child: ElevatedButton(
@@ -513,74 +395,73 @@ class _ProductEditState extends State<ProductEdit> {
     );
   }
 
-  productValidation(v) {
-    if (v.isEmpty) {
-      return 'Product Name Is Empty';
-    } else {
-      return null;
-    }
-  }
-
-  productDesValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Product Description Is Empty';
-    } else {
-      return null;
-    }
-  }
-
-  stockValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  sellingValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  mrpValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  productCodeValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Empty';
-    } else {
-      return null;
-    }
-  }
-
-  deleviryCostValidation(v) {
-    if (v.isEmpty || v == null) {
-      return 'Deleviry Cost Is Empty';
-    } else {
-      return null;
-    }
-  }
-
   void appProduct() {
-    ProviderImage image = context.watch<ProviderImage>();
-    CateProvider c = context.watch<CateProvider>();
-    context.read<PHP_DB_Product>().addData(
+    List<ProductModel> pro = context
+        .read<PHP_DB_Product>()
+        .data
+        .where((element) => element.id == widget.id)
+        .toList();
+    ProviderImage image = context.read<ProviderImage>();
+    CateProvider c = context.read<CateProvider>();
+    ///////////////////////////////////////////////////////////
+    var image0 = image.image0 == null
+        ? 'null'
+        : image.image0.toString().startsWith("/upload")
+            ? image.image0
+            : base64Encode(image.image0);
+    /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    var image1 = image.image1 == null
+        ? 'null'
+        : image.image1.toString().startsWith("/upload")
+            ? image.image1
+            : base64Encode(image.image1);
+    /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    var image2 = image.image2 == null
+        ? 'null'
+        : image.image2.toString().startsWith("/upload")
+            ? image.image2
+            : base64Encode(image.image2);
+    /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    var image3 = image.image3 == null
+        ? 'null'
+        : image.image3.toString().startsWith("/upload")
+            ? image.image3
+            : base64Encode(image.image3);
+    /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    var image4 = image.image4 == null || image.image4 == "imageNull"
+        ? 'null'
+        : image.image4.toString().startsWith("/upload")
+            ? image.image4
+            : base64Encode(image.image4);
+    /////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    var image5 = image.image5 == null || image.image5 == "imageNull"
+        ? 'null'
+        : image.image5.toString().startsWith("/upload")
+            ? image.image5
+            : base64Encode(image.image5);
+    /////////////////////////////////////////////////////////////
+
+    context.read<PHP_DB_Product>().updateData(
+        id: widget.id,
+        oldMainImage: pro[0].mainImage.toString(),
+        oldImage1: pro[0].image1.toString(),
+        oldImage2: pro[0].image2.toString(),
+        oldImage3: pro[0].image3.toString(),
+        oldImage4: pro[0].image4.toString(),
+        oldImage5: pro[0].image5.toString(),
         name: _productController.text,
         des: _desController.text,
-        mainImage: base64Encode(image.image0),
-        image1: base64Encode(image.image1),
-        image2: base64Encode(image.image2),
-        image3: base64Encode(image.image3),
-        image4: image.image4 == null ? 'null' : base64Encode(image.image4),
-        image5: image.image5 == null ? 'null' : base64Encode(image.image5),
+        mainImage: image0,
+        image1: image1,
+        image2: image2,
+        image3: image3,
+        image4: image4,
+        image5: image5,
         isActive: isSwitched,
         returnAvailable: isReturn,
         categoryId: c.selectCategory.id.toString(),

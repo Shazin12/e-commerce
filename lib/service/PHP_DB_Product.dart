@@ -3,7 +3,6 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/productModel.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
@@ -111,7 +110,7 @@ class PHP_DB_Product with ChangeNotifier {
           notifyListeners();
 
           List datas = json.decode(value.body)['data'];
-         // debugPrint(datas.toString());
+          // debugPrint(datas.toString());
           data = datas.map((e) => ProductModel.fromJson(e)).toList();
           notifyListeners();
           searchValue == null
@@ -166,7 +165,8 @@ class PHP_DB_Product with ChangeNotifier {
   }
 
   Future<void> updateData(
-      {required String name,
+      {required String id,
+      required String name,
       required String des,
       required String mainImage,
       required String image1,
@@ -197,6 +197,7 @@ class PHP_DB_Product with ChangeNotifier {
       required BuildContext context}) async {
     //PASSING DATA
     var _map = {
+      "id": id,
       "productName": name,
       "productDes": des,
       "mainImage": mainImage,
@@ -218,6 +219,12 @@ class PHP_DB_Product with ChangeNotifier {
       "deliveryCost": deliveryCost,
       "similarProductId": similarProductId,
       "shotName": shotName,
+      "oldMainImage": oldMainImage,
+      "oldImage1": oldImage1,
+      "oldImage2": oldImage2,
+      "oldImage3": oldImage3,
+      "oldImage4": oldImage4,
+      "oldImage5": oldImage5,
     };
     var _url = Uri.parse('${urls}product/update.php?api=$api');
     dataAdd = true;

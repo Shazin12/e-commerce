@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker_web/image_picker_web.dart';
 import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/groupModel.dart';

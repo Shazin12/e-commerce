@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_web/image_picker_web.dart';
@@ -18,7 +15,6 @@ class CusImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("builder $i");
-    var v = context.read<ProviderImage>();
     return Consumer<ProviderImage>(builder: (context, value, child) {
       return Column(
         children: [
