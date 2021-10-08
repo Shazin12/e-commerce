@@ -3,12 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:web_test/model/productModel.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
+import 'package:web_test/page/product/provider/similar_Provider.dart';
 import 'package:web_test/page/product/widget/bottomSheat.dart';
 import 'package:web_test/page/product/widget/drop.dart';
 import 'package:web_test/page/product/widget/field.dart';
 import 'package:web_test/page/product/widget/image.dart';
+import 'package:web_test/page/product/widget/similarTitle.dart';
 import 'package:web_test/page/product/widget/validation.dart';
 import 'package:provider/provider.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
@@ -48,6 +51,7 @@ class _ProductAddState extends State<ProductAdd> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       context.read<ProviderImage>().clear();
       context.read<CateProvider>().clear();
+      context.read<ProviderSimilar>().clear();
     });
   }
 
@@ -290,7 +294,7 @@ class _ProductAddState extends State<ProductAdd> {
 
   Widget similarPro() {
     return Container(
-      width: 250,
+      width: 400,
       height: 250,
       child: Column(
         children: [
@@ -313,6 +317,23 @@ class _ProductAddState extends State<ProductAdd> {
               }, 'Pick')
             ],
           ),
+          Expanded(child: Consumer<ProviderSimilar>(builder: (_, v, c) {
+            return ListView.builder(
+                itemCount: v.simi.length,
+                itemBuilder: (_, i) {
+                  List<ProductModel> pro = context
+                      .read<PHP_DB_Product>()
+                      .allData
+                      .where((element) => element.id == v.simi[i].id)
+                      .toList();
+
+                  return pro.isEmpty
+                      ? Container()
+                      : CusListTitle(
+                          pro: pro[0],
+                        );
+                });
+          }))
         ],
       ),
       decoration: BoxDecoration(
@@ -358,7 +379,11 @@ class _ProductAddState extends State<ProductAdd> {
         productCode: _proCodeController.text,
         deliveryCost: _deleviryCostController.text,
         shotName: _groupProductShotName.text,
-        similarProductId: [],
+        similarProductId: context
+            .read<ProviderSimilar>()
+            .simi
+            .map((e) => {"id": e.id})
+            .toList(),
         context: context);
   }
 }

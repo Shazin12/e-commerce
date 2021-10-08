@@ -7,9 +7,12 @@ import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/groupModel.dart';
 import 'package:web_test/model/productModel.dart';
+import 'package:web_test/model/similarModel.dart';
 import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
+import 'package:web_test/page/product/provider/similar_Provider.dart';
+import 'package:web_test/page/product/widget/bottomSheat.dart';
 import 'package:web_test/page/product/widget/drop.dart';
 import 'package:web_test/page/product/widget/field.dart';
 import 'package:web_test/page/product/widget/image.dart';
@@ -22,6 +25,8 @@ import 'package:web_test/service/PHP_DB_Product.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
 import 'package:web_test/widget/loader.dart';
+
+import 'widget/similarTitle.dart';
 
 // ignore: must_be_immutable
 class ProductEdit extends StatefulWidget {
@@ -86,6 +91,19 @@ class _ProductEditState extends State<ProductEdit> {
         image.changeImage5(pro[0].image5);
         isSwitched = pro[0].isActive == "0" ? true : false;
         isReturn = pro[0].returnAvailable == "0" ? true : false;
+        print('////////////////');
+        List s = jsonDecode(pro[0].similar.toString()).toList();
+        List<Similar> ss = s.map((e) => Similar.fromJson(e)).toList();
+        context.read<ProviderSimilar>().setSimi(ss);
+        // for (var i = 0; i < s.length ; i++) {
+        //   context.read<ProviderSimilar>().simiAdd(s[i]["id"]);
+        // }
+        //
+        //     List s = pro[0].similar.replaceAll('[', '').replaceAll(']', '').split(',') ;
+
+        //  //List r = s as List<Map>;
+        //
+        //
         // category
         List<CategoryModel> c = category.data
             .where((element) => element.id == pro[0].categoryId)
@@ -275,8 +293,9 @@ class _ProductEditState extends State<ProductEdit> {
                             maxLine: 1,
                             hintText: 'Product Code',
                             width: 200,
-                            validation: (v, h) =>
-                                Validate().productCodeValidation(v, h,context,widget.id),
+                            validation: (v, h) => Validate()
+                                .productCodeValidation(
+                                    v, h, context, widget.id),
                             type: TextInputType.text),
                       ),
                       Padding(
@@ -361,7 +380,7 @@ class _ProductEditState extends State<ProductEdit> {
 
   Widget similarPro() {
     return Container(
-      width: 250,
+      width: 400,
       height: 250,
       child: Column(
         children: [
@@ -371,9 +390,38 @@ class _ProductEditState extends State<ProductEdit> {
             children: [
               Text('Similar Product', style: font),
               SizedBox(width: 20),
-              button(() {}, 'Pick')
+              button(() {
+                showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                      //the rounded corner is created here
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    context: context,
+                    builder: (_) {
+                      return CusBottomSheet(
+                        id: widget.id,
+                      );
+                    });
+              }, 'Pick')
             ],
           ),
+          Expanded(child: Consumer<ProviderSimilar>(builder: (_, v, c) {
+            return ListView.builder(
+                itemCount: v.simi.length,
+                itemBuilder: (_, i) {
+                  List<ProductModel> pro = context
+                      .read<PHP_DB_Product>()
+                      .allData
+                      .where((element) => element.id == v.simi[i].id)
+                      .toList();
+
+                  return pro.isEmpty
+                      ? Container()
+                      : CusListTitle(
+                          pro: pro[0],
+                        );
+                });
+          }))
         ],
       ),
       decoration: BoxDecoration(
@@ -474,7 +522,11 @@ class _ProductEditState extends State<ProductEdit> {
         productCode: _proCodeController.text,
         deliveryCost: _deleviryCostController.text,
         shotName: _groupProductShotName.text,
-        similarProductId: [],
+        similarProductId: context
+            .read<ProviderSimilar>()
+            .simi
+            .map((e) => {"id": e.id})
+            .toList(),
         context: context);
   }
 }

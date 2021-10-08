@@ -20,6 +20,7 @@ class PHP_DB_Product with ChangeNotifier {
   bool dataload = false;
   bool dataAdd = false;
   List<ProductModel> data = [];
+  List<ProductModel> allData = [];
   List<ProductModel> searchdata = [];
   // ignore: avoid_init_to_null
   var searchValue = null;
@@ -104,6 +105,7 @@ class PHP_DB_Product with ChangeNotifier {
           dataload = false;
           errorText = errorTextType(message);
           data = [];
+          allData = [];
           notifyListeners();
         } else {
           errorText = null;
@@ -111,6 +113,7 @@ class PHP_DB_Product with ChangeNotifier {
 
           List datas = json.decode(value.body)['data'];
           // debugPrint(datas.toString());
+          allData = datas.map((e) => ProductModel.fromJson(e)).toList();
           data = datas.map((e) => ProductModel.fromJson(e)).toList();
           notifyListeners();
           searchValue == null

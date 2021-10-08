@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:web_test/model/productModel.dart';
+import 'package:web_test/model/similarModel.dart';
 
 class ProviderSimilar with ChangeNotifier {
-  List<ProductModel> simi = [];
+  List<Similar> simi = [];
 
   simiAdd(v) {
-    simi.add(v);
+    simi.add(Similar(id: v.toString()));
     notifyListeners();
   }
 
@@ -14,8 +14,12 @@ class ProviderSimilar with ChangeNotifier {
     notifyListeners();
   }
 
-  simiClear() {
+  clear() {
     simi.clear();
+    notifyListeners();
+  }
+  setSimi(List<Similar> v){
+    simi = v;
     notifyListeners();
   }
 }

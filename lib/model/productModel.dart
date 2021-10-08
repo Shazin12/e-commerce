@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:web_test/model/similarModel.dart';
+
 ProductModel productModelFromJson(String str) =>
     ProductModel.fromJson(json.decode(str));
 
@@ -33,6 +35,7 @@ class ProductModel {
     required this.deliveryCost,
     required this.createdAt,
     required this.shotName,
+    required this.similar,
   });
 
   String id;
@@ -57,6 +60,7 @@ class ProductModel {
   String deliveryCost;
   DateTime createdAt;
   String shotName;
+  String similar;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["id"],
@@ -80,6 +84,7 @@ class ProductModel {
         productCode: json["product_code"],
         deliveryCost: json["delivery_cost"],
         shotName: json["group_shot_name"],
+        similar:json["similar"],
         createdAt: DateTime.parse(json["created_at"]),
       );
 
@@ -105,6 +110,7 @@ class ProductModel {
         "product_code": productCode,
         "delivery_cost": deliveryCost,
         "group_shot_name": shotName,
+        "similar": similar,
         "created_at": createdAt.toIso8601String(),
         
       };

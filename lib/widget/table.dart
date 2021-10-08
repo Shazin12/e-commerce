@@ -159,6 +159,8 @@ class CustomTable extends StatelessWidget {
 
   // ignore: type_annotate_public_apis
   Widget delete(i) {
+    // ProductModel d = data[i];
+    // print(d.similar.m);
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: Color.fromRGBO(189, 212, 231, 1),

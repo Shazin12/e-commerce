@@ -7,6 +7,7 @@ import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:web_test/service/PHP_DB_Group.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
 
+import 'page/product/provider/similar_Provider.dart';
 import 'service/PHP_DB_Brand.dart';
 import 'service/PHP_DB_SubCategory.dart';
 //import 'package:ss/signup.dart';
@@ -21,6 +22,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => PHP_DB_Product()),
       ChangeNotifierProvider(create: (_) => ProviderImage()),
       ChangeNotifierProvider(create: (_) => CateProvider()),
+      ChangeNotifierProvider(create: (_) => ProviderSimilar()),
     ],
     child: MyApp(),
   ));
