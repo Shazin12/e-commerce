@@ -108,10 +108,10 @@ class _CusBottomSheetState extends State<CusBottomSheet> {
   }
 
   List<ProductModel> datas(List<ProductModel> data) {
-    if (search == null) {
+    if (search == null || search.toString().length< 0) {
       return data;
     } else {
-      return data.where((element) => element.productName == search).toList();
+      return data.where((element) => element.productName.toLowerCase().contains(search!.toLowerCase().toString())).toList();
     }
   }
 }
