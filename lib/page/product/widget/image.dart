@@ -25,16 +25,22 @@ class CusImage extends StatelessWidget {
                     strokeWidth: 1,
                     dashPattern: [8, 1],
                     borderType: BorderType.RRect,
-                    radius: Radius.circular(6),
+                    radius: Radius.circular(10),
                     child: Container(
                       width: 100,
                       height: 100,
-                      child: Center(child: imageShow(value, i)),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Center(child: imageShow(value, i))),
                     )),
               ),
               onTap: () {
                 imagePick(value, i, context);
               }),
+          SizedBox(height: 10),
+          Text("2000x2000"),
+          SizedBox(height: 10),
+          errorMessage(value, i)
         ],
       );
     });
@@ -43,28 +49,35 @@ class CusImage extends StatelessWidget {
   imageShow(ProviderImage value, i) {
     if (i == 0)
       return value.image0 == null
-          ? Text('Main Image')
+          ? _cusPadding(child: Text('Main Image'))
           : imageNetOrMemory(value.image0);
     else if (i == 1)
       return value.image1 == null
-          ? Text('Image 1')
+          ? _cusPadding(child: Text('Image 1'))
           : imageNetOrMemory(value.image1);
     else if (i == 2)
       return value.image2 == null
-          ? Text('Image 2')
+          ? _cusPadding(child: Text('Image 2'))
           : imageNetOrMemory(value.image2);
     else if (i == 3)
       return value.image3 == null || value.image3 == "imageNull"
-          ? Text('Image 3')
+          ? _cusPadding(child: Text('Image 3'))
           : imageNetOrMemory(value.image3);
     else if (i == 4)
       return value.image4 == null || value.image4 == "imageNull"
-          ? Text('Image 4')
+          ? _cusPadding(child: Text('Image 4'))
           : imageNetOrMemory(value.image4);
     else
       return value.image5 == null || value.image5 == "imageNull"
-          ? Text('Image 5')
+          ? _cusPadding(child: Text('Image 5'))
           : imageNetOrMemory(value.image5);
+  }
+
+  Widget _cusPadding({required Widget child}) {
+    return Padding(
+      padding: const EdgeInsets.all(25.0),
+      child: child,
+    );
   }
 
   Widget imageNetOrMemory(v) {
@@ -112,5 +125,31 @@ class CusImage extends StatelessWidget {
       return value.changeImage4(passingValue);
     else
       return value.changeImage5(passingValue);
+  }
+
+  errorMessage(ProviderImage value, int i) {
+    if (value.image0 == null && i == 0) {
+      return Text(
+        'Empty',
+        style: TextStyle(color: Colors.red),
+      );
+    } else if (value.image1 == null && i == 1) {
+      return Text(
+        'Empty',
+        style: TextStyle(color: Colors.red),
+      );
+    } else if (value.image2 == null && i == 2) {
+      return Text(
+        'Empty',
+        style: TextStyle(color: Colors.red),
+      );
+    } else if (value.image3 == null && i == 3) {
+      return Text(
+        'Empty',
+        style: TextStyle(color: Colors.red),
+      );
+    } else {
+      return Text('');
+    }
   }
 }

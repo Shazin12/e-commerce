@@ -9,6 +9,7 @@ import 'package:web_test/model/groupModel.dart';
 import 'package:web_test/model/productModel.dart';
 import 'package:web_test/model/similarModel.dart';
 import 'package:web_test/model/subCategoryModel.dart';
+import 'package:web_test/page/product/product_add.dart';
 import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/page/product/provider/provider_image.dart';
 import 'package:web_test/page/product/provider/similar_Provider.dart';
@@ -95,16 +96,6 @@ class _ProductEditState extends State<ProductEdit> {
         List s = jsonDecode(pro[0].similar.toString()).toList();
         List<Similar> ss = s.map((e) => Similar.fromJson(e)).toList();
         context.read<ProviderSimilar>().setSimi(ss);
-        // for (var i = 0; i < s.length ; i++) {
-        //   context.read<ProviderSimilar>().simiAdd(s[i]["id"]);
-        // }
-        //
-        //     List s = pro[0].similar.replaceAll('[', '').replaceAll(']', '').split(',') ;
-
-        //  //List r = s as List<Map>;
-        //
-        //
-        // category
         List<CategoryModel> c = category.data
             .where((element) => element.id == pro[0].categoryId)
             .toList();
@@ -334,7 +325,7 @@ class _ProductEditState extends State<ProductEdit> {
                     if (formGlobalKey.currentState!.validate()) {
                       appProduct();
                     } else {
-                      debugPrint('no');
+                      errordialog(context);
                     }
                   }, 'Save'),
                   SizedBox(height: 40),
@@ -494,39 +485,46 @@ class _ProductEditState extends State<ProductEdit> {
             : base64Encode(image.image5);
     /////////////////////////////////////////////////////////////
 
-    context.read<PHP_DB_Product>().updateData(
-        id: widget.id,
-        oldMainImage: pro[0].mainImage.toString(),
-        oldImage1: pro[0].image1.toString(),
-        oldImage2: pro[0].image2.toString(),
-        oldImage3: pro[0].image3.toString(),
-        oldImage4: pro[0].image4.toString(),
-        oldImage5: pro[0].image5.toString(),
-        name: _productController.text,
-        des: _desController.text,
-        mainImage: image0,
-        image1: image1,
-        image2: image2,
-        image3: image3,
-        image4: image4,
-        image5: image5,
-        isActive: isSwitched,
-        returnAvailable: isReturn,
-        categoryId: c.selectCategory.id.toString(),
-        subCategoryId: c.selectSubCategory.id.toString(),
-        brandId: c.brand.id.toString(),
-        groupId: c.group.id.toString(),
-        mrp: _mrpController.text,
-        stock: _stockController.text,
-        sellingRate: _sellingController.text,
-        productCode: _proCodeController.text,
-        deliveryCost: _deleviryCostController.text,
-        shotName: _groupProductShotName.text,
-        similarProductId: context
-            .read<ProviderSimilar>()
-            .simi
-            .map((e) => {"id": e.id})
-            .toList(),
-        context: context);
+    if (image.image0 == null ||
+        image.image1 == null ||
+        image.image2 == null ||
+        image.image3 == null) {
+      errordialog(context);
+    } else {
+      context.read<PHP_DB_Product>().updateData(
+          id: widget.id,
+          oldMainImage: pro[0].mainImage.toString(),
+          oldImage1: pro[0].image1.toString(),
+          oldImage2: pro[0].image2.toString(),
+          oldImage3: pro[0].image3.toString(),
+          oldImage4: pro[0].image4.toString(),
+          oldImage5: pro[0].image5.toString(),
+          name: _productController.text,
+          des: _desController.text,
+          mainImage: image0,
+          image1: image1,
+          image2: image2,
+          image3: image3,
+          image4: image4,
+          image5: image5,
+          isActive: isSwitched,
+          returnAvailable: isReturn,
+          categoryId: c.selectCategory.id.toString(),
+          subCategoryId: c.selectSubCategory.id.toString(),
+          brandId: c.brand.id.toString(),
+          groupId: c.group.id.toString(),
+          mrp: _mrpController.text,
+          stock: _stockController.text,
+          sellingRate: _sellingController.text,
+          productCode: _proCodeController.text,
+          deliveryCost: _deleviryCostController.text,
+          shotName: _groupProductShotName.text,
+          similarProductId: context
+              .read<ProviderSimilar>()
+              .simi
+              .map((e) => {"id": e.id})
+              .toList(),
+          context: context);
+    }
   }
 }

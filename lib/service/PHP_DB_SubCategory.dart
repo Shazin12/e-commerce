@@ -159,7 +159,7 @@ class PHP_DB_SubCategory with ChangeNotifier {
     } catch (e) {}
   }
 
-  Future<void> search(name) async {
+  void search(name) async {
     try {
       ///////////////
       dataload = true;
@@ -177,10 +177,10 @@ class PHP_DB_SubCategory with ChangeNotifier {
       notifyListeners();
 
       ///////////////
-      Future.delayed(Duration(seconds: 1)).then((value) {
-        dataload = false;
-        notifyListeners();
-      });
+
+      dataload = false;
+      notifyListeners();
+
       ////////////////
 
     } catch (e) {

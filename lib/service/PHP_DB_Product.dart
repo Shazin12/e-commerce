@@ -3,7 +3,9 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/model/productModel.dart';
+import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/service/PHP_DB_SubCategory.dart';
 import 'package:web_test/url.dart';
 
@@ -22,6 +24,19 @@ class PHP_DB_Product with ChangeNotifier {
   List<ProductModel> data = [];
   List<ProductModel> allData = [];
   List<ProductModel> searchdata = [];
+  CategoryModel selectCategory = CategoryModel(
+      categoryName: 'Select Category',
+      id: 'id',
+      image: 'image',
+      isActive: ' isActive',
+      createdAt: 'createdAt');
+  SubCategoryModel selectSubCategory = SubCategoryModel(
+      subCategoryName: 'Select Sub Category',
+      id: 'id',
+      image: 'image',
+      isActive: ' isActive',
+      categoryId: 'categoryId',
+      createdAt: 'createdAt');
   // ignore: avoid_init_to_null
   var searchValue = null;
   // ignore: avoid_init_to_null
@@ -245,7 +260,7 @@ class PHP_DB_Product with ChangeNotifier {
     } catch (e) {}
   }
 
-  Future<void> search(name) async {
+  void search(name) async {
     try {
       ///////////////
       dataload = true;
@@ -253,7 +268,8 @@ class PHP_DB_Product with ChangeNotifier {
       searchdata = [];
       notifyListeners();
       ////////////////
-      searchdata = data
+
+      data = _searchData()
           .where((element) => element.productName
               .toString()
               .toLowerCase()
@@ -262,14 +278,30 @@ class PHP_DB_Product with ChangeNotifier {
       notifyListeners();
 
       ///////////////
-      Future.delayed(Duration(seconds: 1)).then((value) {
-        dataload = false;
-        notifyListeners();
-      });
+
+      dataload = false;
+      notifyListeners();
+
       ////////////////
 
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  List<ProductModel> _searchData() {
+    if (selectCategory.id != "id") {
+      return allData
+          .where((element) => element.categoryId == selectCategory.id)
+          .toList();
+    } else if (selectSubCategory.id != "id") {
+      return allData
+          .where((element) =>
+              element.categoryId == selectCategory.id &&
+              element.subCategoryId == selectSubCategory.id)
+          .toList();
+    } else {
+      return allData;
     }
   }
 
@@ -279,24 +311,46 @@ class PHP_DB_Product with ChangeNotifier {
     search(searchValue);
   }
 
+  categorySelect(CategoryModel id) {
+    if (id.id.toString() == "id") {
+      // ignore: unnecessary_statements
+      data = allData;
+      selectCategory = id;
+      searchValue = null;
+      notifyListeners();
+    } else {
+      selectCategory = id;
+      searchValue = null;
+      data = allData.where((element) => element.categoryId == id.id).toList();
+      notifyListeners();
+    }
+  }
+
+  subcategorySelect(SubCategoryModel id) {
+    if (id.id.toString() == "id") {
+      // ignore: unnecessary_statements
+      categorySelect(selectCategory);
+      selectSubCategory = id;
+      searchValue = null;
+      notifyListeners();
+    } else {
+      selectSubCategory = id;
+      searchValue = null;
+      data = allData
+          .where((element) =>
+              element.subCategoryId == id.id &&
+              element.categoryId == selectCategory.id)
+          .toList();
+      notifyListeners();
+    }
+  }
+
   ///////////////////////////////////////////////
   succesdialog(context, text) {
     CoolAlert.show(
         barrierDismissible: false,
         context: context,
         type: CoolAlertType.success,
-        text: text,
-        //  confirmBtnText: 'Ok',
-        onConfirmBtnTap: () {
-          Navigator.of(context).pop();
-        });
-  }
-
-  errordialog(context, text) {
-    CoolAlert.show(
-        barrierDismissible: false,
-        context: context,
-        type: CoolAlertType.error,
         text: text,
         //  confirmBtnText: 'Ok',
         onConfirmBtnTap: () {

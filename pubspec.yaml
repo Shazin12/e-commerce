@@ -36,6 +36,8 @@ dependencies:
   http: ^0.13.3
   rive: ^0.7.28
   dotted_border: ^2.0.0+1
+  device_frame: ^0.4.2
+  device_info_plus: ^3.0.1
   
 dev_dependencies:
   flutter_test:

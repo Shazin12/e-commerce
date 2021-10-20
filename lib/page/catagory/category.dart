@@ -23,34 +23,34 @@ class _CatogaryAddState extends State<CatogaryAdd> {
 
   bool isSearching = false;
 
-  @override
-  void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      // category data
-      context.read<PHP_DB_Category>().data.isNotEmpty
-          ? debugPrint('Data not empty')
-          : context.read<PHP_DB_Category>().getData();
-      // sub category
-      context.read<PHP_DB_SubCategory>().data.isNotEmpty
-          ? debugPrint('Data not empty in sub')
-          : context.read<PHP_DB_SubCategory>().getData();
-      // brand data
-      context.read<PHP_DB_Brand>().data.isNotEmpty
-          ? debugPrint('Data not empty in brand')
-          : context.read<PHP_DB_Brand>().getData();
-      // group data
-      context.read<PHP_DB_Group>().data.isNotEmpty
-          ? debugPrint('Data not empty in brand')
-          : context.read<PHP_DB_Group>().getData();
-    });
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+  //     // category data
+  //     context.read<PHP_DB_Category>().data.isNotEmpty
+  //         ? debugPrint('Data not empty')
+  //         : context.read<PHP_DB_Category>().getData();
+  //     // sub category
+  //     context.read<PHP_DB_SubCategory>().data.isNotEmpty
+  //         ? debugPrint('Data not empty in sub')
+  //         : context.read<PHP_DB_SubCategory>().getData();
+  //     // brand data
+  //     context.read<PHP_DB_Brand>().data.isNotEmpty
+  //         ? debugPrint('Data not empty in brand')
+  //         : context.read<PHP_DB_Brand>().getData();
+  //     // group data
+  //     context.read<PHP_DB_Group>().data.isNotEmpty
+  //         ? debugPrint('Data not empty in brand')
+  //         : context.read<PHP_DB_Group>().getData();
+  //   });
 
-    super.initState();
-  }
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:Colors.transparent,
+        backgroundColor: Colors.transparent,
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               // categoryLoader.getData();
@@ -72,6 +72,13 @@ class _CatogaryAddState extends State<CatogaryAdd> {
           centerTitle: true,
           backgroundColor: Color.fromRGBO(83, 184, 187, 0.0),
           elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  context.read<PHP_DB_Category>().getData();
+                },
+                icon: Icon(Icons.refresh_outlined))
+          ],
         ),
         body: Column(
           children: [

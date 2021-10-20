@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,10 +50,14 @@ class _ProductAddState extends State<ProductAdd> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      context.read<ProviderImage>().clear();
-      context.read<CateProvider>().clear();
-      context.read<ProviderSimilar>().clear();
+      first();
     });
+  }
+
+  Future first() async {
+    await context.read<ProviderImage>().clear();
+    await context.read<CateProvider>().clear();
+    await context.read<ProviderSimilar>().clear();
   }
 
   @override
@@ -248,7 +253,7 @@ class _ProductAddState extends State<ProductAdd> {
                     if (formGlobalKey.currentState!.validate()) {
                       appProduct();
                     } else {
-                      debugPrint('no');
+                      errordialog(context);
                     }
                   }, 'Save'),
                   SizedBox(height: 40),
@@ -358,32 +363,71 @@ class _ProductAddState extends State<ProductAdd> {
   void appProduct() {
     ProviderImage image = context.read<ProviderImage>();
     CateProvider c = context.read<CateProvider>();
-    context.read<PHP_DB_Product>().addData(
-        name: _productController.text,
-        des: _desController.text,
-        mainImage: base64Encode(image.image0),
-        image1: base64Encode(image.image1),
-        image2: base64Encode(image.image2),
-        image3: base64Encode(image.image3),
-        image4: image.image4 == null ? 'null' : base64Encode(image.image4),
-        image5: image.image5 == null ? 'null' : base64Encode(image.image5),
-        isActive: isSwitched,
-        returnAvailable: isReturn,
-        categoryId: c.selectCategory.id.toString(),
-        subCategoryId: c.selectSubCategory.id.toString(),
-        brandId: c.brand.id.toString(),
-        groupId: c.group.id.toString(),
-        mrp: _mrpController.text,
-        stock: _stockController.text,
-        sellingRate: _sellingController.text,
-        productCode: _proCodeController.text,
-        deliveryCost: _deleviryCostController.text,
-        shotName: _groupProductShotName.text,
-        similarProductId: context
-            .read<ProviderSimilar>()
-            .simi
-            .map((e) => {"id": e.id})
-            .toList(),
-        context: context);
+    if (image.image0 == null ||
+        image.image1 == null ||
+        image.image2 == null ||
+        image.image3 == null) {
+      errordialog(context);
+    } else {
+      context.read<PHP_DB_Product>().addData(
+          name: _productController.text,
+          des: _desController.text,
+          mainImage: base64Encode(image.image0),
+          image1: base64Encode(image.image1),
+          image2: base64Encode(image.image2),
+          image3: base64Encode(image.image3),
+          image4: image.image4 == null ? 'null' : base64Encode(image.image4),
+          image5: image.image5 == null ? 'null' : base64Encode(image.image5),
+          isActive: isSwitched,
+          returnAvailable: isReturn,
+          categoryId: c.selectCategory.id.toString(),
+          subCategoryId: c.selectSubCategory.id.toString(),
+          brandId: c.brand.id.toString(),
+          groupId: c.group.id.toString(),
+          mrp: _mrpController.text,
+          stock: _stockController.text,
+          sellingRate: _sellingController.text,
+          productCode: _proCodeController.text,
+          deliveryCost: _deleviryCostController.text,
+          shotName: _groupProductShotName.text,
+          similarProductId: context
+              .read<ProviderSimilar>()
+              .simi
+              .map((e) => {"id": e.id})
+              .toList(),
+          context: context);
+    }
   }
+}
+
+errordialog(context) {
+  TextStyle font = GoogleFonts.getFont('Bebas Neue', fontSize: 18);
+  showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Column(
+            children: [
+              Container(
+                width: 300,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(20)),
+                child: Center(
+                  child: Text(
+                    'Error',
+                    style: font,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text("Check All Is Correct", style: font)
+            ],
+          ),
+        );
+      });
 }

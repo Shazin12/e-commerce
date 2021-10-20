@@ -20,7 +20,6 @@ class _BrandState extends State<Brand> {
 
   bool isSearching = false;
 
-
   @override
   void initState() {
     // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
@@ -48,7 +47,7 @@ class _BrandState extends State<Brand> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor:Colors.transparent,
+        backgroundColor: Colors.transparent,
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               // categoryLoader.getData();
@@ -70,6 +69,13 @@ class _BrandState extends State<Brand> {
           centerTitle: true,
           backgroundColor: Color.fromRGBO(83, 184, 187, 0.0),
           elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  context.read<PHP_DB_Brand>().getData();
+                },
+                icon: Icon(Icons.refresh_outlined))
+          ],
         ),
         body: Column(
           children: [

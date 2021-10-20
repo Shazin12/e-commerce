@@ -105,6 +105,13 @@ class _SubCategoryState extends State<SubCategory> {
         ),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.read<PHP_DB_SubCategory>().getData();
+              },
+              icon: Icon(Icons.refresh_outlined))
+        ],
       ),
       body: Column(
         children: [

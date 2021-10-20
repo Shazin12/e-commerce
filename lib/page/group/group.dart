@@ -69,6 +69,13 @@ class _GroupState extends State<Group> {
           centerTitle: true,
           backgroundColor: Color.fromRGBO(83, 184, 187, 0.0),
           elevation: 0,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  context.read<PHP_DB_Group>().getData();
+                },
+                icon: Icon(Icons.refresh_outlined))
+          ],
         ),
         body: Column(
           children: [
