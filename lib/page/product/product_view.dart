@@ -1,7 +1,6 @@
 import 'package:device_frame/device_frame.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:web_test/model/brandModel.dart';
 import 'package:web_test/model/productModel.dart';
 import 'package:web_test/service/PHP_DB_Brand.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';

@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:web_test/model/similarModel.dart';
 
 ProductModel productModelFromJson(String str) =>
     ProductModel.fromJson(json.decode(str));

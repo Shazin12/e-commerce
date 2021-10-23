@@ -6,7 +6,6 @@ import 'package:web_test/model/subCategoryModel.dart';
 import 'package:web_test/page/product/product_edit.dart';
 import 'package:web_test/page/product/product_add.dart';
 import 'package:web_test/page/product/product_view.dart';
-import 'package:web_test/page/product/provider/cate_provider.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
 import 'package:web_test/service/PHP_DB_Product.dart';
 import 'package:provider/provider.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:web_test/model/productModel.dart';
 import 'package:web_test/page/product/provider/similar_Provider.dart';
-import 'package:web_test/page/product/widget/bottomSheat.dart';
 import 'package:web_test/url.dart';
 import 'package:provider/provider.dart';
 

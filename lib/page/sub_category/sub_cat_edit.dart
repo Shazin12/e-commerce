@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:web_test/model/categoryModel.dart';
 import 'package:web_test/service/PHP_DB_Category.dart';
@@ -208,13 +208,14 @@ class _SubCategoryEditState extends State<SubCategoryEdit> {
   }
 
   void uploadFile() async {
+     final ImagePicker _picker = ImagePicker();
     setState(() {
       imgLoad = true;
     });
-    await ImagePickerWeb.getImageInfo.then((value) {
+    await _picker.pickImage(source: ImageSource.gallery).then((value) {
       setState(() {
-        img = value.base64;
-        showimg = value.data;
+        img = value!.readAsBytes();
+        showimg = value.readAsBytes();
         imgLoad = false;
         showimagechange = true;
       });

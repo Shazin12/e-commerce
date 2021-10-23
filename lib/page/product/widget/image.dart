@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:web_test/url.dart';
 
@@ -98,8 +98,9 @@ class CusImage extends StatelessWidget {
   }
 
   imagePick(ProviderImage values, i, context) async {
+    final ImagePicker _picker = ImagePicker();
     values.changeLoadTrue();
-    await ImagePickerWeb.getImage(outputType: ImageType.bytes).then((value) {
+    await _picker.pickImage(source: ImageSource.gallery).then((value) {
       value == null
           ? debugPrint('NOT SELECTED')
           : imagechanger(values, i, value);

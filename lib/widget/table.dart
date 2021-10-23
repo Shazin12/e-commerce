@@ -195,7 +195,7 @@ class CustomTable extends StatelessWidget {
       children: [
         update(i),
         delete(i),
-        trailIconNeed == false ? Container() : trailIcon(i)
+      //  trailIconNeed == false ? Container() : trailIcon(i)
       ],
     );
   }
