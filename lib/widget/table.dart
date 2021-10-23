@@ -56,7 +56,34 @@ class CustomTable extends StatelessWidget {
               : ListView.builder(
                   itemCount: data.length,
                   itemBuilder: (c, i) {
-                    return Padding(
+                    return MediaQuery.of(context).size.width > 600 ?  listdata(I, c) : 
+                    Column(children:[
+                 listdata(I, c), 
+                                  SizedBox(
+                                  width: 250,
+                                  height: 50,
+                                  child: trail(data[i]),
+                   ]) ;
+                  },
+                ),
+    );
+  }
+
+  String title(i) {
+    if (model == CategoryModel) {
+      return data[i].categoryName.toString();
+    } else if (model == BrandModel) {
+      return data[i].brandName.toString();
+    } else if (model == GroupModel) {
+      return data[i].groupName.toString();
+    } else if (model == ProductModel) {
+      return data[i].productName.toString();
+    } else {
+      return data[i].subCategoryName.toString();
+    }
+  } 
+ Widget listdata(int i,BuildContext context) {
+return  Padding(
                       padding: EdgeInsets.symmetric(horizontal: 7, vertical: 1),
                       // ignore: sized_box_for_whitespace
                       child: Container(
@@ -106,35 +133,19 @@ class CustomTable extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                 MediaQuery.of(context).size.width > 600 ?  SizedBox(
                                   width: 250,
                                   height: 50,
                                   child: trail(data[i]),
-                                )
+                                ) : Containter(), 
                               ],
+                              
                             ),
                           ),
                         ),
                       ),
                     );
-                  },
-                ),
-    );
-  }
-
-  String title(i) {
-    if (model == CategoryModel) {
-      return data[i].categoryName.toString();
-    } else if (model == BrandModel) {
-      return data[i].brandName.toString();
-    } else if (model == GroupModel) {
-      return data[i].groupName.toString();
-    } else if (model == ProductModel) {
-      return data[i].productName.toString();
-    } else {
-      return data[i].subCategoryName.toString();
-    }
-  }
+}
 
   Widget subtitle(i, BuildContext context) {
     if (model == BrandModel) {
