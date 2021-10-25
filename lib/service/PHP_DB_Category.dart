@@ -129,7 +129,9 @@ class PHP_DB_Category with ChangeNotifier {
     // debugPrint(_map.toString());
     var _url = Uri.parse('${urls}category/update.php?api=$api');
     dataAdd = true;
+    print(_map);
     notifyListeners();
+    print(_url);
     try {
       await http.put(_url, body: jsonEncode(_map)).then((value) {
         debugPrint('${value.body}');
@@ -161,9 +163,9 @@ class PHP_DB_Category with ChangeNotifier {
 
       ///////////////
 
-        dataload = false;
-        notifyListeners();
-  
+      dataload = false;
+      notifyListeners();
+
       ////////////////
 
     } catch (e) {

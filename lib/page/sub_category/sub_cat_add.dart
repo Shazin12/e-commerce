@@ -105,7 +105,9 @@ class _SubCategoryAddState extends State<SubCategoryAdd> {
                       onPressed: () {
                         //  dialog(context);
                         // ignore: unnecessary_null_comparison
-                        if (img == null || _controller.text.isEmpty ||   selectCategory.id == "id") {
+                        if (img == null ||
+                            _controller.text.isEmpty ||
+                            selectCategory.id == "id") {
                           setState(() {
                             errortext = 'SomeThing Error';
                           });
@@ -146,21 +148,24 @@ class _SubCategoryAddState extends State<SubCategoryAdd> {
   }
 
   void uploadFile() async {
-     final ImagePicker _picker = ImagePicker();
+    final ImagePicker _picker = ImagePicker();
     setState(() {
       imgLoad = true;
     });
-    await _picker.pickImage(source: ImageSource.gallery).then((value) {
-      setState(() {
-        img = value!.readAsBytes();
-        showimg = value.readAsBytes();
-        imgLoad = false;
+    await _picker.pickImage(source: ImageSource.gallery).then((data) {
+      data!.readAsBytes().then((value) {
+        setState(() {
+          img = value;
+          showimg = value;
+          imgLoad = false;
+        });
       });
     });
   }
 
   sendFile(file) {
-    Uint8List _bytesData = Base64Decoder().convert(file);
+    var g = base64Encode(file);
+    Uint8List _bytesData = Base64Decoder().convert(g);
     List<int> _selectedFile = _bytesData;
     var img = base64Encode(_selectedFile);
     context.read<PHP_DB_SubCategory>().addData(

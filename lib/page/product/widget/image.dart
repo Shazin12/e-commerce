@@ -100,10 +100,12 @@ class CusImage extends StatelessWidget {
   imagePick(ProviderImage values, i, context) async {
     final ImagePicker _picker = ImagePicker();
     values.changeLoadTrue();
-    await _picker.pickImage(source: ImageSource.gallery).then((value) {
-      value == null
-          ? debugPrint('NOT SELECTED')
-          : imagechanger(values, i, value);
+    await _picker.pickImage(source: ImageSource.gallery).then((data) {
+      data!.readAsBytes().then((value) {
+        value == null
+            ? debugPrint('NOT SELECTED')
+            : imagechanger(values, i, value);
+      });
       values.changeLoadFalse();
     }).catchError((e) {
       debugPrint(e);

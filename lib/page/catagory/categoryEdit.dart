@@ -181,20 +181,24 @@ class _EditCatogaryState extends State<EditCatogary> {
     setState(() {
       imgLoad = true;
     });
-    await _picker.pickImage(source: ImageSource.gallery).then((value) {
-      setState(() {
-        img = value!.readAsBytes();
-        showimg = value.readAsBytes();
-        imgLoad = false;
-        showimagechange = true;
+    await _picker.pickImage(source: ImageSource.gallery).then((data) {
+      data!.readAsBytes().then((value) {
+        setState(() {
+          img = value;
+          showimg = value;
+          imgLoad = false;
+          showimagechange = true;
+        });
       });
     });
   }
 
   sendFile(file) {
     debugPrint('called');
+    print(showimagechange);
     if (showimagechange == true) {
-      Uint8List _bytesData = Base64Decoder().convert(file);
+      var g = base64Encode(file);
+      Uint8List _bytesData = Base64Decoder().convert(g);
       List<int> _selectedFile = _bytesData;
       var img = base64Encode(_selectedFile);
       context.read<PHP_DB_Category>().updateData(
