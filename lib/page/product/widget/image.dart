@@ -102,6 +102,7 @@ class CusImage extends StatelessWidget {
     values.changeLoadTrue();
     await _picker.pickImage(source: ImageSource.gallery).then((data) {
       data!.readAsBytes().then((value) {
+        // ignore: unnecessary_null_comparison
         value == null
             ? debugPrint('NOT SELECTED')
             : imagechanger(values, i, value);

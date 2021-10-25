@@ -57,68 +57,82 @@ class CustomTable extends StatelessWidget {
                   itemCount: data.length,
                   itemBuilder: (c, i) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 7, vertical: 1),
-                      // ignore: sized_box_for_whitespace
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        //height: 50,
-                        child: Card(
-                          elevation: 5,
-                          color: Color.fromRGBO(189, 212, 231, 1),
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  // width: MediaQuery.of(context).size.width * 0.5,
-                                  child: ListTile(
-                                    leading: model == BrandModel ||
-                                            model == GroupModel
-                                        ? Container(
-                                            width: 1,
-                                            height: 1,
-                                          )
-                                        : Padding(
-                                            padding: EdgeInsets.only(right: 10),
-                                            child: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  model == ProductModel
-                                                      ? imageUrls +
-                                                          data[i]
-                                                              .mainImage
-                                                              .toString()
-                                                      : imageUrls +
-                                                          data[i]
-                                                              .image
-                                                              .toString()),
-                                            ),
-                                          ),
-                                    title: Text(
-                                      title(i),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: font,
-                                    ),
-                                    subtitle: Padding(
-                                      padding: EdgeInsets.only(top: 10),
-                                      child: subtitle(i, context),
-                                    ),
-                                  ),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 7, vertical: 1),
+                        // ignore: sized_box_for_whitespace
+                        child: MediaQuery.of(context).size.width > 600
+                            ? listData(i, context)
+                            : Card(
+                                elevation: 5,
+                                color: Color.fromRGBO(189, 212, 231, 1),
+                                child: Column(
+                                  children: [
+                                    listDataMain(i, context),
+                                    SizedBox(height: 10),
+                                    trail(data[i]),
+                                     SizedBox(height: 10),
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 250,
-                                  height: 50,
-                                  child: trail(data[i]),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
+                              ));
                   },
                 ),
+    );
+  }
+
+  Widget listData(int i, BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      //height: 50,
+      child: Card(
+          elevation: 5,
+          color: Color.fromRGBO(189, 212, 231, 1),
+          child: listDataMain(i, context)),
+    );
+  }
+
+  Widget listDataMain(int i, BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            // width: MediaQuery.of(context).size.width * 0.5,
+            child: ListTile(
+              leading: model == BrandModel || model == GroupModel
+                  ? Container(
+                      width: 1,
+                      height: 1,
+                    )
+                  : Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(model == ProductModel
+                            ? imageUrls + data[i].mainImage.toString()
+                            : imageUrls + data[i].image.toString()),
+                      ),
+                    ),
+              title: Text(
+                title(i),
+                overflow: TextOverflow.ellipsis,
+                style: font,
+              ),
+              subtitle: Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: subtitle(i, context),
+              ),
+            ),
+          ),
+          MediaQuery.of(context).size.width > 600
+              ? SizedBox(
+                  width: 250,
+                  height: 50,
+                  child: trail(data[i]),
+                )
+              : Container()
+        ],
+      ),
     );
   }
 
@@ -195,7 +209,7 @@ class CustomTable extends StatelessWidget {
       children: [
         update(i),
         delete(i),
-      //  trailIconNeed == false ? Container() : trailIcon(i)
+        //  trailIconNeed == false ? Container() : trailIcon(i)
       ],
     );
   }

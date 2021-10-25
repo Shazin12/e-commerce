@@ -216,8 +216,7 @@ class _ProductEditState extends State<ProductEdit> {
                     height: 30,
                   ),
                   // is active and is return  ↓ ↓ ↓
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Wrap(
                     children: [
                       switchs(
                           text: 'Is Active',

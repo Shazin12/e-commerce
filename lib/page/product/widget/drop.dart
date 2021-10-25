@@ -26,18 +26,25 @@ class _DropState extends State<Drop> {
     return Consumer<CateProvider>(builder: (_, v, c) {
       return Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Wrap(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Container(
-                child: CusDropDown(
-                  stockWidth: 2,
-                  height: 40,
-                  width: 220,
-                  items: categoryItem(v),
-                  onChange: (v) {},
-                  selectName: v.selectCategory.categoryName.toString(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Container(
+                  child: CusDropDown(
+                    stockWidth: 2,
+                    height: 40,
+                    width: 220,
+                    items: categoryItem(v),
+                    onChange: (v) {},
+                    selectName: v.selectCategory.categoryName.toString(),
+                  ),
                 ),
+              ),
+              SizedBox(
+                height: 15,
+                width: 10,
               ),
               Container(
                 child: CusDropDown(
@@ -56,18 +63,24 @@ class _DropState extends State<Drop> {
             height: 30,
           ),
           // brand and group  ↓ ↓ ↓
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Wrap(
             children: [
-              Container(
-                child: CusDropDown(
-                  stockWidth: 2,
-                  height: 40,
-                  width: 220,
-                  items: brandItem(v),
-                  onChange: (v) {},
-                  selectName: v.brand.brandName.toString(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Container(
+                  child: CusDropDown(
+                    stockWidth: 2,
+                    height: 40,
+                    width: 220,
+                    items: brandItem(v),
+                    onChange: (v) {},
+                    selectName: v.brand.brandName.toString(),
+                  ),
                 ),
+              ),
+              SizedBox(
+                height: 15,
+                width: 10,
               ),
               Container(
                 child: CusDropDown(

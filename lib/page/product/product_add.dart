@@ -144,8 +144,8 @@ class _ProductAddState extends State<ProductAdd> {
                     height: 30,
                   ),
                   // is active and is return  ↓ ↓ ↓
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Wrap(
+                 //   mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       switchs(
                           text: 'Is Active',
