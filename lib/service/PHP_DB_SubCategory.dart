@@ -110,7 +110,7 @@ class PHP_DB_SubCategory with ChangeNotifier {
     //   print(id);
     var _url = Uri.parse('${urls}sub_category/delete.php?api=$api');
     try {
-      await http.delete(_url, body: json.encode(_map)).then((value) {
+      await http.post(_url, body: json.encode(_map)).then((value) {
         print(value.body);
         if (value.statusCode == 200) {
           getData();
@@ -145,7 +145,7 @@ class PHP_DB_SubCategory with ChangeNotifier {
     dataAdd = true;
     notifyListeners();
     try {
-      await http.put(_url, body: jsonEncode(_map)).then((value) {
+      await http.post(_url, body: jsonEncode(_map)).then((value) {
         print('${value.body}');
         succesdialog(context, 'Update Success');
         getData();

@@ -40,7 +40,7 @@ class CusField extends StatelessWidget {
       required Function validation,
       required TextInputType type}) {
     return Container(
-      width: width,
+      width: double.parse(int.parse(width.toString()).toString()),
       child: Column(
         children: [
           Row(
@@ -56,7 +56,7 @@ class CusField extends StatelessWidget {
             height: 6,
           ),
           Container(
-            width: width,
+            width: double.parse(int.parse(width.toString()).toString()),
             child: TextFormField(
               inputFormatters: type == TextInputType.number
                   ? [FilteringTextInputFormatter.digitsOnly]

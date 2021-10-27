@@ -101,7 +101,7 @@ class PHP_DB_Brand with ChangeNotifier {
     };
     //   debugPrint(id);
     var _url = Uri.parse('${urls}brand/delete.php?api=$api');
-    await http.delete(_url, body: json.encode(_map)).then((value) {
+    await http.post(_url, body: json.encode(_map)).then((value) {
       debugPrint(value.body);
       if (value.statusCode == 200) {
         getData();
@@ -127,7 +127,7 @@ class PHP_DB_Brand with ChangeNotifier {
     dataAdd = true;
     notifyListeners();
     try {
-      await http.put(_url, body: jsonEncode(_map)).then((value) {
+      await http.post(_url, body: jsonEncode(_map)).then((value) {
         debugPrint('${value.body}');
         succesdialog(context, 'Update Success');
         getData();

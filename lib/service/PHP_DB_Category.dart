@@ -100,7 +100,8 @@ class PHP_DB_Category with ChangeNotifier {
     var _map = {"id": id, "imagepath": imagepath};
     //   debugPrint(id);
     var _url = Uri.parse('${urls}category/delete.php?api=$api');
-    await http.delete(_url, body: json.encode(_map)).then((value) {
+    print(_url);
+    await http.post(_url, body: json.encode(_map)).then((value) {
       debugPrint(value.body);
       if (value.statusCode == 200) {
         getData();
@@ -133,7 +134,7 @@ class PHP_DB_Category with ChangeNotifier {
     notifyListeners();
     print(_url);
     try {
-      await http.put(_url, body: jsonEncode(_map)).then((value) {
+      await http.post(_url, body: jsonEncode(_map)).then((value) {
         debugPrint('${value.body}');
         succesdialog(context, 'Update Success');
         getData();
