@@ -99,21 +99,14 @@ class CusImage extends StatelessWidget {
 
   imagePick(ProviderImage values, i, context) async {
     final ImagePicker _picker = ImagePicker();
-    values.changeLoadTrue();
-    await _picker.pickImage(source: ImageSource.gallery).then((data) {
-      data!.readAsBytes().then((value) {
-        // ignore: unnecessary_null_comparison
-        value == null
-            ? debugPrint('NOT SELECTED')
-            : imagechanger(values, i, value);
-      });
-      values.changeLoadFalse();
-    }).catchError((e) {
-      debugPrint(e);
-      values.changeLoadFalse();
-      print(values.isLoading);
-    });
-    values.changeLoadFalse();
+
+    var data = await _picker.pickImage(source: ImageSource.gallery);
+    data == null
+        ? imagechanger(values, i, "imageNull")
+        : data.readAsBytes().then((value) {
+            //  print("value $value");
+            imagechanger(values, i, value);
+          });
   }
 
   void imagechanger(ProviderImage value, i, passingValue) {
